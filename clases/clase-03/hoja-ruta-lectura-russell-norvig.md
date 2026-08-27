@@ -2,6 +2,10 @@
 
 Libro: Stuart Russell y Peter Norvig, *Artificial Intelligence: A Modern Approach*, 4.ª edición global.
 
+**Acceso al libro:** [PDF compartido por la cátedra en Google Drive](https://drive.google.com/file/d/1xU008onWQF5dymFOgQXQw_KkjiB6vv5M/view?usp=sharing).
+
+Usá el archivo exclusivamente con fines académicos y respetá sus condiciones de acceso y derechos de autor.
+
 ## Propósito
 
 Esta guía acompaña la lectura vinculada con la Clase 3. No busca recorrer capítulos completos: selecciona tres tramos para comprender:
