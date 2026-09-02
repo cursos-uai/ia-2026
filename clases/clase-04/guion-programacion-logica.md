@@ -1,20 +1,109 @@
-<!-- markdownlint-disable MD013 MD024 MD029 -->
+<!-- markdownlint-disable MD013 MD024 MD029 MD051 -->
 
 # Guion docente - Clase 4: Programación lógica con Prolog
 
 Esta guía acompaña la clase 4 y está pensada para que el alumno pueda seguir una hoja de ruta paso a paso: primero entiende el concepto, después copia una base de conocimiento, ejecuta consultas y finalmente resuelve ejercicios breves.
 
-## Datos generales
+## Índice
 
-- Duración base: 120 minutos.
-- Banco extendido de actividades: hasta 195 minutos si se realizan todos los ejercicios en vivo.
+- [1. Datos generales](#1-datos-generales)
+- [2. Resultados de aprendizaje](#2-resultados-de-aprendizaje)
+- [3. Preparación antes de la clase](#3-preparacion-antes-de-la-clase)
+- [4. Dinámica de trabajo](#4-dinamica-de-trabajo)
+  - [4.1. Cómo usar el recorrido](#41-como-usar-el-recorrido)
+- [5. Puente desde IA simbólica](#5-puente-desde-ia-simbolica)
+  - [5.1. Concepto](#51-concepto)
+  - [5.2. Guion oral sugerido](#52-guion-oral-sugerido)
+  - [5.3. Primer ejemplo](#53-primer-ejemplo)
+  - [5.4. Preguntas de control](#54-preguntas-de-control)
+- [6. Paradigmas, silogismos y programas lógicos](#6-paradigmas-silogismos-y-programas-logicos)
+  - [6.1. Concepto](#61-concepto)
+  - [6.2. Demo](#62-demo)
+  - [6.3. Qué observar](#63-que-observar)
+  - [6.4. Ejercicio guiado](#64-ejercicio-guiado)
+- [7. Base de conocimiento, individuos, predicados y aridad](#7-base-de-conocimiento-individuos-predicados-y-aridad)
+  - [7.1. Concepto](#71-concepto)
+  - [7.2. Demo](#72-demo)
+  - [7.3. Qué remarcar](#73-que-remarcar)
+  - [7.4. Ejercicio guiado](#74-ejercicio-guiado)
+- [8. Cláusulas: hechos y reglas](#8-clausulas-hechos-y-reglas)
+  - [8.1. Concepto](#81-concepto)
+  - [8.2. Corrección conceptual importante](#82-correccion-conceptual-importante)
+  - [8.3. Demo](#83-demo)
+  - [8.4. Ejercicio guiado](#84-ejercicio-guiado)
+- [9. Consultas individuales, existenciales y múltiples soluciones](#9-consultas-individuales-existenciales-y-multiples-soluciones)
+  - [9.1. Concepto](#91-concepto)
+  - [9.2. Demo](#92-demo)
+  - [9.3. Qué remarcar](#93-que-remarcar)
+  - [9.4. Ejercicio guiado](#94-ejercicio-guiado)
+  - [9.5. Nota docente sobre negación](#95-nota-docente-sobre-negacion)
+- [10. Universo cerrado: qué significa `false`](#10-universo-cerrado-que-significa-false)
+  - [10.1. Concepto](#101-concepto)
+  - [10.2. Demo paso a paso](#102-demo-paso-a-paso)
+  - [10.3. Ejercicio guiado](#103-ejercicio-guiado)
+- [11. Pregunta bisagra](#11-pregunta-bisagra)
+- [12. Variables, variable anónima y búsqueda de soluciones](#12-variables-variable-anonima-y-busqueda-de-soluciones)
+  - [12.1. Concepto](#121-concepto)
+  - [12.2. Demo](#122-demo)
+  - [12.3. Ejercicio guiado](#123-ejercicio-guiado)
+- [13. Conjunción, disyunción y desigualdad](#13-conjuncion-disyuncion-y-desigualdad)
+  - [13.1. Concepto](#131-concepto)
+  - [13.2. Demo](#132-demo)
+  - [13.3. Qué remarcar](#133-que-remarcar)
+  - [13.4. Ejercicio guiado](#134-ejercicio-guiado)
+- [14. Inversibilidad](#14-inversibilidad)
+  - [14.1. Concepto](#141-concepto)
+  - [14.2. Demo](#142-demo)
+  - [14.3. Segunda demo del material](#143-segunda-demo-del-material)
+  - [14.4. Ejercicio guiado](#144-ejercicio-guiado)
+- [15. Comparación de individuos, números y aritmética](#15-comparacion-de-individuos-numeros-y-aritmetica)
+  - [15.1. Concepto](#151-concepto)
+  - [15.2. Demo: individuos](#152-demo-individuos)
+  - [15.3. Demo: aritmética](#153-demo-aritmetica)
+  - [15.4. Qué remarcar](#154-que-remarcar)
+  - [15.5. Ejercicio guiado](#155-ejercicio-guiado)
+- [16. Strings, átomos con espacios y nombres propios](#16-strings-atomos-con-espacios-y-nombres-propios)
+  - [16.1. Concepto](#161-concepto)
+  - [16.2. Demo](#162-demo)
+  - [16.3. Ejercicio guiado](#163-ejercicio-guiado)
+- [17. Functores como individuos compuestos](#17-functores-como-individuos-compuestos)
+  - [17.1. Concepto](#171-concepto)
+  - [17.2. Demo](#172-demo)
+  - [17.3. Qué remarcar](#173-que-remarcar)
+  - [17.4. Ejercicio guiado](#174-ejercicio-guiado)
+- [18. Recursividad](#18-recursividad)
+  - [18.1. Concepto](#181-concepto)
+  - [18.2. Convención importante](#182-convencion-importante)
+  - [18.3. Demo](#183-demo)
+  - [18.4. Lectura de las reglas](#184-lectura-de-las-reglas)
+  - [18.5. Ejercicio guiado](#185-ejercicio-guiado)
+- [19. Mini práctica integradora: correlatividades académicas](#19-mini-practica-integradora-correlatividades-academicas)
+  - [19.1. Contexto](#191-contexto)
+  - [19.2. Base inicial](#192-base-inicial)
+  - [19.3. Regla de cursada](#193-regla-de-cursada)
+  - [19.4. Ejercicio guiado](#194-ejercicio-guiado)
+  - [19.5. Puente hacia la actividad completa](#195-puente-hacia-la-actividad-completa)
+- [20. Cierre de la clase](#20-cierre-de-la-clase)
+  - [20.1. Síntesis oral](#201-sintesis-oral)
+  - [20.2. Ticket de salida](#202-ticket-de-salida)
+- [21. Errores frecuentes y respuesta docente](#21-errores-frecuentes-y-respuesta-docente)
+- [22. Comandos útiles](#22-comandos-utiles)
+- [23. Recorrido compacto sugerido](#23-recorrido-compacto-sugerido)
+- [24. Prácticas complementarias sugeridas](#24-practicas-complementarias-sugeridas)
+  - [24.1. Práctica A — Pokémon](#241-practica-a-pokemon)
+  - [24.2. Práctica B — Personajes y barrios](#242-practica-b-personajes-y-barrios)
+  - [24.3. Práctica C — Candidatos laborales](#243-practica-c-candidatos-laborales)
+- [25. Fuentes](#25-fuentes)
+
+## 1. Datos generales
+
 - Unidad: Lógica simbólica.
 - Material principal: `Clase 4 - Programación Lógica.pdf` (59 diapositivas).
 - Modalidad: explicación conceptual, demostraciones en Prolog y ejercicios guiados.
 - Entorno sugerido: [SWISH](https://swish.swi-prolog.org/) o SWI-Prolog local.
 - Requisito: conceptos de símbolo, hecho, regla e inferencia trabajados en la Clase 3.
 
-## Resultados de aprendizaje
+## 2. Resultados de aprendizaje
 
 Al terminar la clase, los estudiantes deberían poder:
 
@@ -28,7 +117,7 @@ Al terminar la clase, los estudiantes deberían poder:
 - reconocer functores como términos compuestos;
 - formular una definición recursiva con caso base y caso recursivo.
 
-## Preparación antes de la clase
+## 3. Preparación antes de la clase
 
 1. Abrir [SWISH](https://swish.swi-prolog.org/) o SWI-Prolog local.
 2. Tener disponible [`base-inicial.pl`](base-inicial.pl).
@@ -54,7 +143,7 @@ Ejemplo equivalente en la caja de consulta de SWISH:
 mortal(socrates).
 ```
 
-## Dinámica de trabajo
+## 4. Dinámica de trabajo
 
 Para cada bloque:
 
@@ -62,35 +151,37 @@ Para cada bloque:
 2. Copiar el programa base.
 3. Ejecutar las consultas sugeridas.
 4. Anticipar el resultado antes de ejecutar.
-5. Resolver el ejercicio de 10 minutos.
+5. Resolver el ejercicio guiado.
 6. Comparar con una solución posible.
 
-### Cómo usar los tiempos
+### 4.1. Cómo usar el recorrido
 
-La duración base de la clase es de 120 minutos. El recorrido detallado de este
-archivo funciona como banco extendido: incluye más ejemplos y ejercicios de los
-que conviene ejecutar completos en una sola clase.
+El archivo funciona como una hoja de ruta guiada y como banco de actividades.
+No hace falta ejecutar todos los ejemplos en una única clase: elegí los bloques
+según el ritmo del grupo y dejá el resto como práctica asincrónica o material
+de repaso.
 
-Para una clase estricta de 120 minutos, usar esta tabla como recorrido principal y seleccionar sólo algunos ejercicios en vivo. El resto queda como práctica asincrónica o material de repaso.
+Recorrido sugerido para una clase compacta:
 
-| Tiempo | Bloque |
+| Orden | Bloque |
 | --- | --- |
-| 0-10 | Puente desde IA simbólica |
-| 10-22 | Paradigmas y silogismos |
-| 22-38 | Base de conocimiento, individuos y predicados |
-| 38-52 | Hechos, reglas y consultas |
-| 52-67 | Variables, `_` y múltiples soluciones |
-| 67-77 | Mundo cerrado |
-| 77-95 | Conjunción, disyunción e inversibilidad |
-| 95-108 | Aritmética y unificación |
-| 108-118 | Functores y recursividad |
-| 118-120 | Ticket de salida |
+| 1 | Puente desde IA simbólica |
+| 2 | Paradigmas y silogismos |
+| 3 | Base de conocimiento, individuos y predicados |
+| 4 | Hechos, reglas y consultas |
+| 5 | Variables, `_` y múltiples soluciones |
+| 6 | Mundo cerrado |
+| 7 | Conjunción, disyunción e inversibilidad |
+| 8 | Aritmética y unificación |
+| 9 | Functores y recursividad |
+| 10 | Ticket de salida |
 
-A partir de acá se ofrece el banco extendido, con más desarrollo y ejercicios que los necesarios para una única clase de 120 minutos.
+A partir de acá se ofrece el recorrido detallado, con más desarrollo y
+ejercicios que los necesarios para una única clase.
 
-## Banco extendido | 0-10 min | Puente desde IA simbólica
+## 5. Puente desde IA simbólica
 
-### Concepto
+### 5.1. Concepto
 
 En programación imperativa solemos indicar pasos:
 
@@ -107,11 +198,11 @@ uso del programa = consultas al motor de inferencia
 
 Prolog pertenece al paradigma declarativo: el programa describe propiedades y relaciones de un conjunto de individuos. El motor de inferencia intenta demostrar consultas a partir de esa base.
 
-### Guion oral sugerido
+### 5.2. Guion oral sugerido
 
 > En esta clase no vamos a pensar primero en algoritmos paso a paso. Vamos a pensar qué sabemos del mundo que queremos modelar. En Prolog escribimos hechos y reglas; después consultamos al motor para que intente probar respuestas.
 
-### Primer ejemplo
+### 5.3. Primer ejemplo
 
 Programa:
 
@@ -130,17 +221,17 @@ mortal(socrates).
 mortal(Quien).
 ```
 
-### Preguntas de control
+### 5.4. Preguntas de control
 
 - ¿Cuál es el hecho?
 - ¿Cuál es la regla?
 - ¿La conclusión `mortal(socrates)` está escrita o se deriva?
 
-## 10-22 min | Paradigmas, silogismos y programas lógicos
+## 6. Paradigmas, silogismos y programas lógicos
 
 Diapositivas 2-8.
 
-### Concepto
+### 6.1. Concepto
 
 Un silogismo tiene premisas y conclusión:
 
@@ -163,7 +254,7 @@ La regla se lee:
 
 La parte izquierda es la **cabeza**. La parte derecha es el **cuerpo**. El símbolo `:-` se lee como “si”.
 
-### Demo
+### 6.2. Demo
 
 Programa:
 
@@ -193,13 +284,13 @@ mortal(Quien).
 mortal(aristoteles).
 ```
 
-### Qué observar
+### 6.3. Qué observar
 
 - `mortal(socrates)` da verdadero aunque no esté escrito como hecho.
 - Se deriva por la regla `mortal(X) :- humano(X)`.
 - `mortal(aristoteles)` falla si no declaramos `humano(aristoteles)`.
 
-### Ejercicio 10 minutos
+### 6.4. Ejercicio guiado
 
 Enunciado:
 
@@ -225,11 +316,11 @@ ser_vivo(X) :- mamifero(X).
 ser_vivo(X) :- ave(X).
 ```
 
-## 22-38 min | Base de conocimiento, individuos, predicados y aridad
+## 7. Base de conocimiento, individuos, predicados y aridad
 
 Diapositivas 9-14.
 
-### Concepto
+### 7.1. Concepto
 
 Un programa Prolog es una **base de conocimiento**. Esa base contiene cláusulas que hablan sobre individuos mediante predicados.
 
@@ -255,7 +346,7 @@ nacio(solon, -634).      % nacio/2
 
 Nombre y aridad identifican un predicado. Para Prolog, `vive/1` y `vive/2` son predicados distintos.
 
-### Demo
+### 7.2. Demo
 
 Programa:
 
@@ -295,13 +386,13 @@ son_conciudadanos(socrates, solon).
 son_conciudadanos(X, Y).
 ```
 
-### Qué remarcar
+### 7.3. Qué remarcar
 
 - `vive(socrates, atenas)` no devuelve un valor: afirma una relación.
 - `son_conciudadanos/2` no está listado como hecho: se infiere desde `vive/2`.
 - `P1 \= P2` evita que una persona sea conciudadana de sí misma.
 
-### Ejercicio 10 minutos
+### 7.4. Ejercicio guiado
 
 Enunciado inspirado en la práctica de países:
 
@@ -332,11 +423,11 @@ Preguntas para responder:
 - ¿Qué consultas dan `false`?
 - ¿Por qué `pais(marruecos)` no prueba que Marruecos no sea país en el mundo real?
 
-## 38-52 min | Cláusulas: hechos y reglas
+## 8. Cláusulas: hechos y reglas
 
 Diapositivas 15-18 y 31-33.
 
-### Concepto
+### 8.1. Concepto
 
 Una cláusula es una unidad de información de la base de conocimiento. Siempre termina con punto.
 
@@ -361,7 +452,7 @@ Lectura correcta:
 
 > Para demostrar `mortal(Persona)`, Prolog debe demostrar `humano(Persona)`.
 
-### Corrección conceptual importante
+### 8.2. Corrección conceptual importante
 
 Si se mira la regla como implicación lógica:
 
@@ -371,7 +462,7 @@ mortal(X) :- humano(X).
 
 el antecedente es `humano(X)` y el consecuente es `mortal(X)`. No hay que invertirlos.
 
-### Demo
+### 8.3. Demo
 
 Programa:
 
@@ -392,7 +483,7 @@ es_hijo_de(Hijo, paco).
 es_hijo_de(ana, Padre).
 ```
 
-### Ejercicio 10 minutos
+### 8.4. Ejercicio guiado
 
 Enunciado:
 
@@ -416,11 +507,11 @@ estudiante(maria).
 puede_rendir(X) :- estudiante(X).
 ```
 
-## 52-67 min | Consultas individuales, existenciales y múltiples soluciones
+## 9. Consultas individuales, existenciales y múltiples soluciones
 
 Diapositivas 17-30.
 
-### Concepto
+### 9.1. Concepto
 
 Las consultas son la forma de usar un programa lógico.
 
@@ -443,7 +534,7 @@ mortal(X).
 
 Una consulta sin variables responde `true` o `false`. Una consulta con variables puede devolver valores.
 
-### Demo
+### 9.2. Demo
 
 Programa:
 
@@ -470,7 +561,7 @@ come(brenda, Comida).
 come(Persona, Comida).
 ```
 
-### Qué remarcar
+### 9.3. Qué remarcar
 
 - Una variable nombrada, como `Pasta`, conserva y muestra su valor.
 - `_` es una variable anónima: hay un valor, pero no nos interesa mostrarlo.
@@ -478,7 +569,7 @@ come(Persona, Comida).
 - El `;` pide otra solución.
 - Enter corta la búsqueda de más soluciones.
 
-### Ejercicio 10 minutos
+### 9.4. Ejercicio guiado
 
 Enunciado inspirado en la práctica de comidas:
 
@@ -511,15 +602,15 @@ no_come(ana, Que).
 no_come(_, pastas).
 ```
 
-### Nota docente sobre negación
+### 9.5. Nota docente sobre negación
 
 En esta etapa usamos `no_come/2` como un predicado explícito. Todavía no estamos usando negación por fallo (`\+`). Es importante no mezclar ambas ideas demasiado temprano.
 
-## 67-77 min | Universo cerrado: qué significa `false`
+## 10. Universo cerrado: qué significa `false`
 
 Diapositivas 22-24 y 34-36.
 
-### Concepto
+### 10.1. Concepto
 
 Prolog trabaja con el principio de **mundo cerrado**:
 
@@ -527,7 +618,7 @@ Prolog trabaja con el principio de **mundo cerrado**:
 
 Esto no significa que sea falso en el mundo real. Significa que el sistema no tiene información suficiente para demostrarlo.
 
-### Demo paso a paso
+### 10.2. Demo paso a paso
 
 Programa:
 
@@ -551,7 +642,7 @@ Razonamiento:
 5. No encuentra ese hecho.
 6. Devuelve `false`.
 
-### Ejercicio 10 minutos
+### 10.3. Ejercicio guiado
 
 Enunciado:
 
@@ -578,7 +669,7 @@ Pregunta final:
 
 > ¿Qué información habría que agregar para que `mascota(luna)` sea verdadero?
 
-## 77-82 min | Pausa breve
+## 11. Pregunta bisagra
 
 Dejar proyectada esta pregunta:
 
@@ -588,9 +679,9 @@ Respuesta esperada:
 
 > Puede ser ambas cosas: a veces se recupera un hecho; otras veces se deriva una conclusión a partir de reglas.
 
-## 82-96 min | Variables, variable anónima y búsqueda de soluciones
+## 12. Variables, variable anónima y búsqueda de soluciones
 
-### Concepto
+### 12.1. Concepto
 
 Reglas de nombres:
 
@@ -619,7 +710,7 @@ come(_, _).
 
 sólo pregunta si existe alguna relación `come/2`, sin importar los valores.
 
-### Demo
+### 12.2. Demo
 
 Programa:
 
@@ -640,7 +731,7 @@ come(X, X).
 come(Persona, Comida).
 ```
 
-### Ejercicio 10 minutos
+### 12.3. Ejercicio guiado
 
 Enunciado:
 
@@ -664,11 +755,11 @@ gusta(_, _).
 gusta(X, X).
 ```
 
-## 96-112 min | Conjunción, disyunción y desigualdad
+## 13. Conjunción, disyunción y desigualdad
 
 Diapositivas 37-41.
 
-### Concepto
+### 13.1. Concepto
 
 La conjunción lógica, es decir “Y”, se escribe con coma:
 
@@ -683,7 +774,7 @@ p(X) :- condicion_a(X).
 p(X) :- condicion_b(X).
 ```
 
-### Demo
+### 13.2. Demo
 
 Programa:
 
@@ -732,13 +823,13 @@ hermanastro(luis, jose).
 hermanastro(X, Y).
 ```
 
-### Qué remarcar
+### 13.3. Qué remarcar
 
 - Sin `Persona1 \= Persona2`, una persona podría aparecer relacionada consigo misma.
 - `hermanastro/2` como está definido significa “comparte padre o comparte madre”. Esa definición también incluye hermanos completos.
 - Si queremos una definición más estricta, hay que escribir esa restricción.
 
-### Ejercicio 10 minutos
+### 13.4. Ejercicio guiado
 
 Enunciado inspirado en familia Simpsons:
 
@@ -781,11 +872,11 @@ hermano(X, lisa).
 hermano(X, Y).
 ```
 
-## 112-127 min | Inversibilidad
+## 14. Inversibilidad
 
 Diapositivas 42-44.
 
-### Concepto
+### 14.1. Concepto
 
 En muchos lenguajes pensamos en entradas y salidas. En Prolog, si modelamos relaciones, el mismo predicado puede usarse en distintas direcciones.
 
@@ -802,7 +893,7 @@ Con una sola regla podemos preguntar:
 - de quién es hijo Luis;
 - todos los vínculos hijo-padre.
 
-### Demo
+### 14.2. Demo
 
 Programa:
 
@@ -825,7 +916,7 @@ hijo(luis, Padre).
 hijo(Hijo, Padre).
 ```
 
-### Segunda demo del material
+### 14.3. Segunda demo del material
 
 Programa:
 
@@ -857,7 +948,7 @@ es_del_sur(susi).
 es_del_sur(P).
 ```
 
-### Ejercicio 10 minutos
+### 14.4. Ejercicio guiado
 
 Enunciado:
 
@@ -891,11 +982,11 @@ docente_de(alejandro, Alumno).
 docente_de(Docente, Alumno).
 ```
 
-## 127-142 min | Comparación de individuos, números y aritmética
+## 15. Comparación de individuos, números y aritmética
 
 Diapositivas 45-49.
 
-### Concepto
+### 15.1. Concepto
 
 Hay que separar:
 
@@ -906,7 +997,7 @@ Hay que separar:
 
 `is` evalúa una expresión aritmética del lado derecho.
 
-### Demo: individuos
+### 15.2. Demo: individuos
 
 Consultas:
 
@@ -918,7 +1009,7 @@ X = juan.
 f(3) = f(X).
 ```
 
-### Demo: aritmética
+### 15.3. Demo: aritmética
 
 Programa:
 
@@ -946,7 +1037,7 @@ X is 3 + 2.
 4 =< 3 + 2.
 ```
 
-### Qué remarcar
+### 15.4. Qué remarcar
 
 - `X = 3 + 2` liga `X` al término `3+2`, no al número 5.
 - `X is 3 + 2` liga `X` al número 5.
@@ -954,7 +1045,7 @@ X is 3 + 2.
 - Ese error es esperado y sirve para mostrar que `is/2` no resuelve ecuaciones hacia atrás.
 - Operadores de comparación correctos: `<`, `>`, `=<`, `>=`, `=:=`, `=\=`.
 
-### Ejercicio 10 minutos
+### 15.5. Ejercicio guiado
 
 Enunciado:
 
@@ -984,11 +1075,11 @@ mayor_de_edad(luis).
 mayor_de_edad(X).
 ```
 
-## 142-152 min | Strings, átomos con espacios y nombres propios
+## 16. Strings, átomos con espacios y nombres propios
 
 Diapositiva 50.
 
-### Concepto
+### 16.1. Concepto
 
 En los ejemplos usamos átomos simples:
 
@@ -1004,7 +1095,7 @@ escritor('Jorge Luis Borges').
 
 En SWI-Prolog, las comillas dobles pueden representar strings; para una clase inicial, usar comillas simples evita ambigüedades cuando queremos átomos.
 
-### Demo
+### 16.2. Demo
 
 Programa:
 
@@ -1021,7 +1112,7 @@ escritor('Jorge Luis Borges').
 escritor(X).
 ```
 
-### Ejercicio 10 minutos
+### 16.3. Ejercicio guiado
 
 Enunciado:
 
@@ -1041,11 +1132,11 @@ Consulta:
 pelicula(X).
 ```
 
-## 152-167 min | Functores como individuos compuestos
+## 17. Functores como individuos compuestos
 
 Diapositivas 51-55.
 
-### Concepto
+### 17.1. Concepto
 
 Un functor puede usarse para construir un dato compuesto.
 
@@ -1064,7 +1155,7 @@ Acá:
 
 No todo lo que tiene forma `nombre(...)` es necesariamente un predicado consultable en la base. Depende de dónde aparece.
 
-### Demo
+### 17.2. Demo
 
 Programa:
 
@@ -1092,11 +1183,11 @@ Error útil:
 canilla(X, hierro, Y).
 ```
 
-### Qué remarcar
+### 17.3. Qué remarcar
 
 Si Prolog dice que `canilla/3` no existe, está bien: nunca declaramos un predicado `canilla/3`; declaramos un término `canilla(...)` dentro de `vende/2`.
 
-### Ejercicio 10 minutos
+### 17.4. Ejercicio guiado
 
 Enunciado:
 
@@ -1118,11 +1209,11 @@ vende(_, libro(Titulo, _, 1949)).
 vende(_, libro(_, _, Anio)).
 ```
 
-## 167-182 min | Recursividad
+## 18. Recursividad
 
 Diapositivas 56-59.
 
-### Concepto
+### 18.1. Concepto
 
 La recursividad en programación lógica consiste en definir un predicado en términos de sí mismo.
 
@@ -1136,7 +1227,7 @@ Una definición recursiva necesita:
 - caso recursivo;
 - avance hacia el caso base.
 
-### Convención importante
+### 18.2. Convención importante
 
 Para evitar confusiones, usamos esta orientación:
 
@@ -1146,7 +1237,7 @@ padre(Padre, Hijo).
 
 Entonces `padre(juan, luis)` significa que Juan es padre de Luis.
 
-### Demo
+### 18.3. Demo
 
 Programa:
 
@@ -1173,7 +1264,7 @@ ancestro(X, luis).
 ancestro(roberto, Persona).
 ```
 
-### Lectura de las reglas
+### 18.4. Lectura de las reglas
 
 Caso base:
 
@@ -1183,7 +1274,7 @@ Caso recursivo:
 
 > Si alguien es padre de un intermedio, y ese intermedio es ancestro de una persona, entonces ese alguien también es ancestro de esa persona.
 
-### Ejercicio 10 minutos
+### 18.5. Ejercicio guiado
 
 Enunciado:
 
@@ -1221,11 +1312,11 @@ Preguntas:
 - ¿Cuál es el caso recursivo?
 - ¿Qué pasaría si cargamos un ciclo, por ejemplo `padre(sofia, pedro)`?
 
-## 182-195 min | Mini práctica integradora: correlatividades académicas
+## 19. Mini práctica integradora: correlatividades académicas
 
 Esta parte conecta con [`actividad-prolog.md`](actividad-prolog.md).
 
-### Contexto
+### 19.1. Contexto
 
 La universidad necesita una herramienta didáctica que responda consultas sobre estudiantes, materias aprobadas y correlatividades.
 
@@ -1245,7 +1336,7 @@ se lee:
 
 > Algoritmos es requisito directo de Inteligencia Artificial.
 
-### Base inicial
+### 19.2. Base inicial
 
 Usar [`base-inicial.pl`](base-inicial.pl).
 
@@ -1259,7 +1350,7 @@ aprobo(Estudiante, Materia).
 aprobo(_, programacion_2).
 ```
 
-### Regla de cursada
+### 19.3. Regla de cursada
 
 Completar:
 
@@ -1281,7 +1372,7 @@ puede_cursar(carla, inteligencia_artificial).
 puede_cursar(Quien, inteligencia_artificial).
 ```
 
-### Ejercicio 10 minutos
+### 19.4. Ejercicio guiado
 
 Enunciado:
 
@@ -1296,9 +1387,9 @@ Preguntas:
 - ¿Qué condición falla para Bruno?
 - ¿Qué condición falla para Carla?
 
-### Puente hacia la actividad completa
+### 19.5. Puente hacia la actividad completa
 
-Esta mini práctica sólo cubre la primera parte de [`actividad-prolog.md`](actividad-prolog.md). Si hay tiempo o se deja como tarea, continuar con:
+Esta mini práctica sólo cubre la primera parte de [`actividad-prolog.md`](actividad-prolog.md). Como continuación o tarea, seguir con:
 
 1. **Autorización excepcional**: agregar una segunda cláusula de `puede_cursar/2` para modelar una alternativa controlada.
 2. **Correlatividades recursivas**: definir `requisito/2` para encontrar requisitos directos e indirectos.
@@ -1323,9 +1414,9 @@ requisito(inteligencia_artificial, Requisito).
 requisito(Materia, programacion_1).
 ```
 
-## Cierre de la clase
+## 20. Cierre de la clase
 
-### Síntesis oral
+### 20.1. Síntesis oral
 
 - Prolog no parte de instrucciones, parte de conocimiento.
 - Un programa Prolog es una base de hechos y reglas.
@@ -1335,7 +1426,7 @@ requisito(Materia, programacion_1).
 - La inversibilidad aparece cuando modelamos relaciones, no procedimientos.
 - La recursividad permite expresar relaciones transitivas como `ancestro/2` o `requisito/2`.
 
-### Ticket de salida
+### 20.2. Ticket de salida
 
 Responder antes de cerrar:
 
@@ -1347,7 +1438,7 @@ Responder antes de cerrar:
 6. ¿Qué ventaja tiene que `hijo/2` sea inversible?
 7. ¿Por qué `canilla/3` puede no existir aunque aparezca `canilla(...)` dentro de `vende/2`?
 
-## Errores frecuentes y respuesta docente
+## 21. Errores frecuentes y respuesta docente
 
 | Situación | Intervención sugerida |
 | --- | --- |
@@ -1361,7 +1452,7 @@ Responder antes de cerrar:
 | La recursión no termina | Revisar caso base, avance y posible ciclo en los datos. |
 | Confunden functor con predicado | Revisar si aparece como cláusula o como argumento dentro de otro predicado. |
 
-## Comandos útiles
+## 22. Comandos útiles
 
 Ver todo lo cargado:
 
@@ -1400,30 +1491,30 @@ Cortar la búsqueda:
 Enter
 ```
 
-## Adaptación a 120 minutos
+## 23. Recorrido compacto sugerido
 
-Si la clase debe durar estrictamente 120 minutos, usar esta versión compacta:
+Si necesitás una versión más breve, usar esta secuencia:
 
-| Tiempo | Bloque |
+| Orden | Bloque |
 | --- | --- |
-| 0-10 | Puente desde IA simbólica |
-| 10-22 | Paradigmas y silogismos |
-| 22-38 | Base de conocimiento, individuos y predicados |
-| 38-52 | Hechos, reglas y consultas |
-| 52-67 | Variables, `_` y múltiples soluciones |
-| 67-77 | Mundo cerrado |
-| 77-95 | Conjunción, disyunción e inversibilidad |
-| 95-108 | Aritmética y unificación |
-| 108-118 | Functores y recursividad |
-| 118-120 | Ticket de salida |
+| 1 | Puente desde IA simbólica |
+| 2 | Paradigmas y silogismos |
+| 3 | Base de conocimiento, individuos y predicados |
+| 4 | Hechos, reglas y consultas |
+| 5 | Variables, `_` y múltiples soluciones |
+| 6 | Mundo cerrado |
+| 7 | Conjunción, disyunción e inversibilidad |
+| 8 | Aritmética y unificación |
+| 9 | Functores y recursividad |
+| 10 | Ticket de salida |
 
-Los ejercicios pueden quedar como pausas de 10 minutos durante la clase o como trabajo asincrónico, según el ritmo del grupo.
+Los ejercicios pueden resolverse durante la clase o quedar como trabajo asincrónico, según el ritmo del grupo.
 
-## Prácticas complementarias sugeridas
+## 24. Prácticas complementarias sugeridas
 
 Estas consignas retoman la plancha de ejercicios de la materia.
 
-### Práctica A — Pokémon
+### 24.1. Práctica A — Pokémon
 
 Enunciado:
 
@@ -1438,7 +1529,7 @@ hierba(charizard).
 electrico(_).
 ```
 
-### Práctica B — Personajes y barrios
+### 24.2. Práctica B — Personajes y barrios
 
 Enunciado:
 
@@ -1467,7 +1558,7 @@ poeta(el_diablo).
 apodo(bernardo, Apodo).
 ```
 
-### Práctica C — Candidatos laborales
+### 24.3. Práctica C — Candidatos laborales
 
 Enunciado:
 
@@ -1509,7 +1600,7 @@ Consulta:
 candidato_junior(X).
 ```
 
-## Fuentes
+## 25. Fuentes
 
 - `Clase 4 - Programación Lógica.pdf`, material de la cátedra.
 - `Tutorial de Prolog.pdf`, material complementario de sintaxis, unificación, predicados, listas y recursividad.
