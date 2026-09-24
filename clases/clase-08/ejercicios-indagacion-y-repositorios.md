@@ -1,319 +1,129 @@
-# Ejercicios de indagación y experimentación
+# Actividad registrada - Big Data y Machine Learning
 
-## Propósito
+## Resultado de aprendizaje
 
-Estos ejercicios permiten contrastar las diapositivas con literatura técnica, inspeccionar proyectos reales y ejecutar pequeños experimentos reproducibles. El objetivo no es copiar definiciones ni obtener una métrica alta, sino producir evidencia y explicar decisiones.
+Evalúa los resultados de una tarea de Machine Learning para valorar la performance de un algoritmo particular, seleccionando e interpretando las métricas preestablecidas para la tarea.
 
-## Reglas de trabajo
+## Actividad
 
-- Trabajen con datos públicos, sintéticos o anonimizados. No suban información personal, bancaria o institucional.
-- Registren título, autor u organización, URL y fecha de consulta de cada fuente.
-- Distingan una afirmación de una evidencia. Una captura sin explicación no alcanza.
-- Antes de ejecutar un repositorio, lean `README`, licencia, dependencias y comandos.
-- Usen un entorno aislado, como Colab, `venv` o un contenedor. No ejecuten scripts desconocidos con permisos administrativos.
-- No presenten resultados del conjunto de entrenamiento como desempeño final.
-- Si una instrucción ya no funciona, documenten el error, la versión y el cambio necesario. No oculten el problema.
+Reflexione acerca del concepto de Big Data y su participación en Machine Learning. Para ello, resuelva los dos ejercicios que se presentan a continuación: uno de indagación conceptual y otro de experimentación técnica en Google Colab.
 
-## Roles del equipo
+La entrega es única y debe presentarse en la [actividad registrada del portal Ultra](https://ultra.uaionline.edu.ar/ultra/courses/_166731_1/assessment/test/_17162900_1?gradeitemView=details) mediante una de estas opciones:
 
-- **Investigador:** localiza y compara fuentes.
-- **Ejecutor:** reproduce comandos y conserva evidencia.
-- **Revisor:** intenta refutar las conclusiones, verifica citas y controla fugas de datos.
+- un archivo PDF; o
+- un enlace público a un PDF, con permiso de lectura habilitado.
 
-Los roles rotan en cada ejercicio.
+El PDF debe integrar las respuestas de ambos ejercicios, incluir el enlace al notebook de Google Colab con permiso de lectura y consignar las fuentes utilizadas. No se aceptan el notebook solo, archivos editables ni enlaces que soliciten autorización de acceso.
 
 ---
 
-## Ejercicio 1 - ¿Qué significa Big Data?
-
-**Duración:** 35 minutos.  
-**Modalidad:** indagación en parejas o tríos.  
-**Producto:** tabla comparativa y definición propia.
-
-### Fuentes iniciales
-
-- [NIST Big Data Interoperability Framework, volumen 1](https://www.nist.gov/publications/nist-big-data-interoperability-framework-volume-1-big-data-definitions-version-2)
-- [Repositorio oficial de Apache Hadoop](https://github.com/apache/hadoop)
-- [Sitio oficial de Apache Spark](https://spark.apache.org/)
+## Ejercicio 1 - Indagación: de Big Data a Machine Learning
 
 ### Consigna
 
-1. Lean la definición y las características de Big Data propuestas por NIST.
-2. Revisen cómo Hadoop y Spark describen su propio propósito.
-3. Construyan una tabla con estas columnas:
+Seleccione un caso real en uno de estos ámbitos: detección de fraude, salud, educación, movilidad o comercio electrónico. A partir de al menos tres fuentes confiables, analice:
 
-| Fuente | Problema que intenta resolver | Características de los datos | Tecnología mencionada | Qué no afirma |
-|---|---|---|---|---|
-| NIST | | | | |
-| Hadoop | | | | |
-| Spark | | | | |
+1. qué problema se intenta resolver y qué datos se utilizan;
+2. qué características de Big Data aparecen en el caso —volumen, velocidad, variedad, veracidad o valor— y cuáles no resultan determinantes;
+3. por qué se utiliza Machine Learning y qué resultado se espera del modelo;
+4. si el problema requiere realmente tecnologías de Big Data o si podría resolverse con herramientas convencionales;
+5. qué riesgos o limitaciones existen en relación con calidad de datos, privacidad, sesgo o interpretación de resultados.
 
-4. Redacten una definición propia de entre 60 y 90 palabras.
-5. Analicen uno de estos casos y decidan si requiere Big Data: historial académico de una comisión, telemetría de una flota o eventos de una red social.
+Concluya con una reflexión propia de entre 250 y 400 palabras que responda: **¿qué aporta Big Data al proceso de Machine Learning en el caso elegido y qué no garantiza por sí mismo?**
 
-### Preguntas de indagación
+### Fuentes y evidencia
 
-- ¿Las V forman una definición universal o una herramienta de caracterización?
-- ¿Qué requisito vuelve insuficiente una solución convencional?
-- ¿Qué diferencia existe entre gran volumen y procesamiento distribuido?
+- Utilice como mínimo una fuente académica y una fuente oficial o institucional.
+- Registre autor u organización, título, año, URL o DOI y fecha de consulta.
+- Compare las fuentes: no se limite a copiar definiciones.
+- Puede comenzar con el [NIST Big Data Interoperability Framework](https://www.nist.gov/publications/nist-big-data-interoperability-framework-volume-1-big-data-definitions-version-2), pero debe sumar fuentes específicas del caso elegido.
 
-### Criterios de logro
+### Evidencia que debe aparecer en el PDF
 
-- La definición propia integra al menos dos fuentes y no se limita a “muchos datos”.
-- La decisión sobre el caso incluye volumen, velocidad, variedad, latencia y costo.
-- El equipo identifica al menos una afirmación que la fuente no permite sostener.
-
----
-
-## Ejercicio 2 - Auditoría de un repositorio técnico
-
-**Duración:** 40 minutos.  
-**Modalidad:** equipos de tres.  
-**Producto:** ficha de auditoría de un repositorio.
-
-### Repositorios para elegir
-
-- [Apache Hadoop](https://github.com/apache/hadoop)
-- [Apache Spark](https://github.com/apache/spark)
-- [imbalanced-learn](https://github.com/scikit-learn-contrib/imbalanced-learn)
-- [Fraud Detection Handbook](https://github.com/Fraud-Detection-Handbook/fraud-detection-handbook)
-
-### Consigna
-
-Sin clonar todavía, inspeccionen el repositorio desde GitHub y respondan:
-
-1. ¿Cuál es el propósito declarado?
-2. ¿Quién mantiene el proyecto?
-3. ¿Qué licencia posee?
-4. ¿Qué lenguajes predominan?
-5. ¿Cuándo fue la última modificación visible?
-6. ¿Existen pruebas automatizadas o integración continua?
-7. ¿Hay ejemplos ejecutables?
-8. ¿Qué dependencias o requisitos aparecen?
-9. ¿Qué issue o pull request abierto muestra una limitación actual?
-10. ¿Qué parte concreta podría utilizar un estudiante sin desplegar toda la plataforma?
-
-### Evidencia mínima
-
-- enlaces permanentes a dos archivos del repositorio;
-- enlace a un issue o pull request;
-- captura o transcripción breve del comando de instalación propuesto;
-- una recomendación: usar, usar con precaución o descartar para esta clase.
-
-### Criterios de logro
-
-- La recomendación distingue popularidad de adecuación pedagógica.
-- El equipo revisa licencia, mantenimiento y reproducibilidad.
-- Las conclusiones citan archivos o discusiones concretas.
+- descripción breve del caso;
+- tabla que relacione características de Big Data, evidencia y efecto sobre Machine Learning;
+- reflexión final;
+- referencias completas.
 
 ---
 
-## Ejercicio 3 - Del baseline a una evaluación honesta
+## Ejercicio 2 - Google Colab: evaluación de un clasificador con datos desbalanceados
 
-**Duración:** 55 minutos.  
-**Modalidad:** laboratorio en Colab o entorno virtual.  
-**Producto:** notebook ejecutado y comentario de resultados.
+### Objetivo
 
-### Lecturas y código de referencia
-
-- [Precision-Recall en scikit-learn](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html)
-- [Ejemplo oficial de reporte para datos desbalanceados](https://github.com/scikit-learn-contrib/imbalanced-learn/blob/master/examples/evaluation/plot_classification_report.py)
-- [Artículo de imbalanced-learn en JMLR](https://www.jmlr.org/papers/v18/16-365.html)
+Entrenar y evaluar un algoritmo de clasificación, comparar sus resultados con un baseline e interpretar métricas adecuadas para una tarea donde la clase positiva es poco frecuente.
 
 ### Preparación
 
-Instalen dependencias en un entorno aislado:
+1. Cree un notebook nuevo en Google Colab.
+2. Use Python, `pandas`, `matplotlib` y `scikit-learn`. No necesita cargar datos externos: el conjunto se generará de forma sintética.
+3. Fije `random_state=42` en la generación de datos, la partición y el modelo para que el experimento sea reproducible.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install scikit-learn imbalanced-learn matplotlib
-```
+### Consigna técnica
 
-En Colab alcanza con:
+1. Genere 10.000 observaciones con `make_classification`, usando 20 variables y aproximadamente 1 % de clase positiva.
+2. Separe entrenamiento y prueba con `train_test_split`, reservando 25 % para test y utilizando `stratify=y`.
+3. Entrene estos dos modelos:
+   - un baseline que siempre prediga la clase mayoritaria con `DummyClassifier(strategy="most_frequent")`;
+   - una regresión logística con `class_weight="balanced"` y `max_iter=2000`.
+4. Evalúe ambos modelos sobre el mismo conjunto de prueba mediante:
+   - accuracy;
+   - precision;
+   - recall;
+   - F1;
+   - average precision o PR-AUC;
+   - matriz de confusión.
+5. Para la regresión logística, obtenga `predict_proba` y compare el umbral predeterminado de 0,50 con un umbral de 0,20.
+6. Presente una tabla con los resultados de los tres escenarios: baseline, regresión logística con umbral 0,50 y regresión logística con umbral 0,20.
+7. Grafique la curva precision-recall de la regresión logística.
 
-```python
-%pip install -q imbalanced-learn
-```
+### Análisis obligatorio
 
-### Consigna
+Responda en el notebook y sintetice en el PDF:
 
-1. Generen un dataset sintético con 10.000 casos y 1% de clase positiva mediante `make_classification`.
-2. Dividan con `train_test_split(..., stratify=y, random_state=42)`.
-3. Construyan tres modelos:
-   - predictor constante de la clase mayoritaria;
-   - regresión logística sin balanceo;
-   - regresión logística con `class_weight="balanced"`.
-4. Para cada uno calculen accuracy, precision, recall, F1, average precision y matriz de confusión.
-5. Expliquen por qué el modelo constante puede obtener una accuracy alta y resultar inútil.
-6. Modifiquen el umbral de 0,50 a 0,20. Registren qué ocurre con falsos positivos y falsos negativos.
+1. ¿Por qué el baseline puede alcanzar una accuracy alta y, aun así, no resultar útil?
+2. ¿Qué cambia en falsos positivos y falsos negativos al bajar el umbral?
+3. ¿Qué métrica considera prioritaria para este problema y por qué?
+4. Si un falso negativo costara diez veces más que revisar una falsa alarma, ¿qué modelo y umbral elegiría? Justifique con los resultados obtenidos.
+5. ¿Qué limitaciones tiene evaluar con datos sintéticos y qué evidencia adicional necesitaría antes de usar el modelo en un caso real?
 
-### Preguntas
+### Controles metodológicos
 
-- ¿Qué métrica cambió más entre modelos?
-- ¿Qué modelo elegirían si un fraude no detectado costara diez veces más que una revisión innecesaria?
-- ¿La probabilidad estimada está calibrada? ¿Qué evidencia adicional necesitarían?
+- El conjunto de prueba no debe intervenir en el entrenamiento ni en la selección de variables.
+- Informe las versiones de Python y `scikit-learn` usadas por Colab.
+- El notebook debe ejecutarse de principio a fin sin errores.
+- No utilice datos personales, bancarios ni institucionales.
 
-### Criterios de logro
+### Evidencia que debe aparecer en el PDF
 
-- El test no interviene en el entrenamiento.
-- La comparación incluye un baseline trivial.
-- La recomendación utiliza costos y tipos de error, no solo una métrica aislada.
-
----
-
-## Ejercicio 4 - SMOTE sin fuga de datos
-
-**Duración:** 50 minutos.  
-**Modalidad:** laboratorio con revisión cruzada.  
-**Producto:** dos pipelines comparados y explicación de la fuga.
-
-### Recursos
-
-- [Documentación y repositorio de imbalanced-learn](https://github.com/scikit-learn-contrib/imbalanced-learn)
-- [Ejemplo oficial con pipeline, SMOTE y regresión logística](https://github.com/scikit-learn-contrib/imbalanced-learn/blob/master/examples/evaluation/plot_classification_report.py)
-- [Fraud Detection Handbook, introducción al aprendizaje desbalanceado](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_6_ImbalancedLearning/Introduction.html)
-
-### Consigna
-
-1. Reutilicen el dataset del ejercicio anterior.
-2. Construyan un `imblearn.pipeline.Pipeline` con escalado, SMOTE y regresión logística.
-3. Evalúen con validación cruzada estratificada.
-4. Construyan deliberadamente una variante incorrecta que aplique SMOTE antes de separar o validar.
-5. Comparen ambos resultados y expliquen por qué la variante incorrecta puede parecer mejor.
-6. Revisen cinco ejemplos sintéticos generados. ¿Son necesariamente casos realistas?
-
-### Código de inicio
-
-```python
-from imblearn.pipeline import make_pipeline
-from imblearn.over_sampling import SMOTE
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-
-pipeline = make_pipeline(
-    StandardScaler(),
-    SMOTE(random_state=42),
-    LogisticRegression(max_iter=2000, random_state=42),
-)
-```
-
-### Revisión entre pares
-
-Otro equipo debe localizar dónde ocurre el remuestreo y comprobar que el conjunto de prueba conserva su distribución original.
-
-### Criterios de logro
-
-- El flujo correcto encapsula SMOTE dentro del pipeline.
-- El equipo explica la fuga con sus propias palabras.
-- La conclusión reconoce que SMOTE no garantiza una mejora.
+- enlace público al notebook de Colab;
+- explicación breve del procedimiento;
+- tabla comparativa de métricas;
+- matrices de confusión y curva precision-recall;
+- interpretación de resultados y respuestas al análisis obligatorio;
+- limitaciones y conclusión.
 
 ---
 
-## Ejercicio 5 - Reproducir y cuestionar un caso de fraude
+## Formato de la entrega
 
-**Duración:** 90 minutos más trabajo fuera de clase.  
-**Modalidad:** equipos de tres.  
-**Producto:** informe reproducible de dos páginas y notebook.
+Organice el PDF con la [plantilla de entrega](plantilla-entrega.md). Extensión sugerida: entre 4 y 7 páginas, sin contar portada ni referencias.
 
-### Repositorio principal
+Antes de entregar, verifique que:
 
-- [Reproducible Machine Learning for Credit Card Fraud Detection](https://github.com/Fraud-Detection-Handbook/fraud-detection-handbook)
+- el PDF se abre correctamente;
+- el enlace al PDF, si lo utiliza, no solicita acceso;
+- el enlace a Colab permite leer el notebook;
+- las dos actividades están completas;
+- las tablas, gráficos y textos son legibles;
+- todas las fuentes están citadas.
 
-El repositorio reúne capítulos y notebooks ejecutables en Jupyter, Colab o Binder. Antes de comenzar, lean su README y observen las versiones declaradas: algunas dependencias son antiguas y pueden requerir adaptación.
+## Criterios de evaluación
 
-### Consigna
-
-1. Clonen el repositorio o abran un notebook mediante el enlace ofrecido por el proyecto.
-2. Elijan una sección de los capítulos sobre métricas, selección de modelos o aprendizaje desbalanceado.
-3. Ejecuten un fragmento reproducible.
-4. Registren versión de Python, dependencias, commit o fecha del material y tiempo de ejecución.
-5. Cambien una sola decisión experimental: métrica, umbral, modelo o estrategia de balanceo.
-6. Comparen el resultado original y el modificado.
-7. Identifiquen una limitación del experimento: dataset simulado, cambio temporal, costo no modelado, calibración, explicabilidad u otra.
-
-### Preguntas de literatura
-
-- ¿Por qué los autores consideran insuficiente comparar trabajos sin un protocolo común?
-- ¿Qué diferencia existe entre una partición aleatoria y una evaluación temporal en fraude?
-- ¿Qué métricas relacionan mejor el modelo con la carga de trabajo de los investigadores humanos?
-
-### Criterios de logro
-
-- Otra persona puede repetir los pasos con la información entregada.
-- El equipo modifica una sola variable experimental y compara evidencia.
-- La conclusión distingue resultado computacional de validez externa.
-
----
-
-## Ejercicio 6 - Batch, streaming y arquitectura mínima
-
-**Duración:** 60 minutos.  
-**Modalidad:** desafío opcional.  
-**Producto:** mapa de arquitectura y pequeña prueba de Spark.
-
-### Recursos
-
-- [Quick Start oficial de Apache Spark](https://github.com/apache/spark/blob/master/docs/quick-start.md)
-- [Repositorio oficial de Apache Spark](https://github.com/apache/spark)
-- [Apache Hadoop](https://hadoop.apache.org/)
-
-### Consigna
-
-1. Lean el Quick Start y distingan transformación de acción.
-2. Ejecuten Spark localmente mediante una instalación de PySpark o la imagen oficial indicada en el sitio de Spark.
-3. Carguen un archivo de texto o CSV pequeño, filtren registros y calculen un conteo.
-4. Expliquen por qué este experimento local no demuestra escalabilidad distribuida.
-5. Diseñen dos arquitecturas para fraude:
-   - entrenamiento histórico por lotes;
-   - inferencia de baja latencia para una transacción nueva.
-6. Marquen fuentes, ingesta, almacenamiento, transformación, modelo, salida, monitoreo y revisión humana.
-
-### Preguntas
-
-- ¿Qué parte puede resolverse por lotes?
-- ¿Qué parte exige baja latencia?
-- ¿Dónde se almacenan las variables históricas?
-- ¿Cómo se registra la decisión para una auditoría posterior?
-
-### Criterios de logro
-
-- El equipo no confunde ejecutar Spark localmente con operar un clúster.
-- La arquitectura separa entrenamiento e inferencia.
-- El diagrama incluye seguridad, trazabilidad y supervisión humana.
-
----
-
-## Entrega integradora
-
-Cada equipo selecciona tres ejercicios, con al menos uno experimental, y entrega:
-
-- la [plantilla completa](plantilla-entrega.md);
-- enlaces permanentes a las fuentes y repositorios;
-- notebook o comandos ejecutados;
-- evidencia de resultados;
-- una comparación entre expectativa y observación;
-- una limitación técnica;
-- un riesgo de privacidad, sesgo o uso indebido;
-- una propuesta de siguiente experimento.
-
-## Rúbrica
-
-| Criterio | Logrado | En proceso | A revisar |
-|---|---|---|---|
-| Indagación | Contrasta fuentes primarias y explica diferencias | Reúne fuentes sin compararlas | Usa afirmaciones sin fuente |
-| Reproducibilidad | Registra entorno, versiones, pasos y evidencia | Faltan uno o dos datos del entorno | No puede repetirse el experimento |
-| Evaluación | Interpreta métricas según errores y costos | Informa métricas con explicación parcial | Confunde métricas o usa solo accuracy |
-| Fuga de datos | Separa test y encapsula remuestreo correctamente | El flujo es correcto pero no lo justifica | Remuestrea antes de separar o usa test al entrenar |
-| Pensamiento crítico | Identifica límites y propone una prueba siguiente | Menciona límites generales | Presenta el resultado como definitivo |
-| Uso responsable | Protege datos y contempla supervisión humana | Reconoce el riesgo sin mitigarlo | Usa datos sensibles o automatiza decisiones sin control |
-
-## Señales de aprendizaje
-
-- El estudiante puede explicar por qué Big Data no significa solamente volumen.
-- Inspecciona un repositorio antes de ejecutar código.
-- Usa un baseline y reserva un test intacto.
-- Relaciona precision y recall con consecuencias reales.
-- Detecta una fuga de datos en un procedimiento de remuestreo.
-- Distingue una demostración local de una arquitectura distribuida.
-- Comunica límites, versiones y fuentes de manera trazable.
+| Criterio | Ponderación | Evidencia esperada |
+|---|---:|---|
+| Relación entre Big Data y Machine Learning | 20 % | Análisis del caso sustentado en fuentes y reflexión propia |
+| Calidad y trazabilidad de las fuentes | 15 % | Referencias completas, confiables y comparadas |
+| Implementación reproducible en Colab | 20 % | Notebook ejecutable, partición correcta y resultados verificables |
+| Selección e interpretación de métricas | 30 % | Comparación de accuracy, precision, recall, F1, PR-AUC y matrices de confusión |
+| Comunicación de resultados y limitaciones | 15 % | PDF claro, evidencia legible y conclusiones coherentes |

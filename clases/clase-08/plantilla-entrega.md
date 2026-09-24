@@ -4,30 +4,32 @@
 
 - Integrantes:
 - Fecha:
-- Ejercicios seleccionados:
-- Roles asumidos en cada ejercicio:
+- Enlace público al notebook de Google Colab:
 
-## 1. Pregunta investigada
+## 1. Ejercicio de indagación
 
-Escriban la pregunta concreta que intentaron responder.
+### Caso y pregunta investigada
 
-## 2. Fuentes
+Describan brevemente el caso elegido y la pregunta que intentaron responder.
+
+### Fuentes
 
 | Fuente | Autor u organización | URL | Fecha de consulta | Aporte al trabajo |
 |---|---|---|---|---|
 | | | | | |
 
-## 3. Repositorio inspeccionado
+### Relación entre Big Data y Machine Learning
 
-- Repositorio y URL:
-- Commit, etiqueta o fecha observada:
-- Licencia:
-- Lenguajes principales:
-- Dependencias:
-- Señales de mantenimiento:
-- Riesgo detectado antes de ejecutar:
+- Características de Big Data identificadas:
+- Evidencia para cada característica:
+- Aporte de Big Data al proceso de Machine Learning:
+- Aspectos que Big Data no garantiza:
+- Riesgos o limitaciones:
+- Reflexión final:
 
-## 4. Entorno de ejecución
+## 2. Ejercicio técnico en Google Colab
+
+### Entorno de ejecución
 
 ```text
 Sistema o Colab:
@@ -37,36 +39,45 @@ Comando de instalación:
 Comando de ejecución:
 ```
 
-## 5. Hipótesis
+### Hipótesis
 
 Antes de ejecutar, indiquen qué esperaban observar y por qué.
 
-## 6. Evidencia
+### Evidencia y resultados
 
-Incluyan salida, tabla, gráfico o captura necesaria. No incluyan secretos, claves ni datos personales.
+Incluyan la tabla de métricas, las matrices de confusión y la curva precision-recall. No incluyan secretos, claves ni datos personales.
 
-## 7. Interpretación
+### Interpretación
 
 - Resultado principal:
 - Comparación con el baseline:
 - Qué significa para el problema:
 - Qué no permite concluir:
 
-## 8. Control metodológico
+### Control metodológico
 
 - ¿El test quedó separado del entrenamiento?
 - ¿Dónde se ajustó el preprocesamiento?
-- ¿Dónde se aplicó el remuestreo?
+- ¿Qué modelos y umbrales se compararon?
 - ¿Qué métrica se eligió y por qué?
-- ¿Qué versión o commit permite repetir el ejercicio?
+- ¿Qué versiones permiten repetir el ejercicio?
 
-## 9. Límites y riesgos
+### Límites y riesgos
 
 - Limitación técnica:
 - Riesgo de privacidad o seguridad:
 - Posible sesgo:
 - Decisión que requiere supervisión humana:
 
-## 10. Próximo experimento
+### Conclusión y próximo experimento
 
 Propongan un cambio concreto y una forma de saber si mejora el resultado.
+
+## 3. Lista de verificación
+
+- [ ] El PDF contiene los dos ejercicios.
+- [ ] El enlace al notebook permite acceso de lectura.
+- [ ] El notebook se ejecuta completo sin errores.
+- [ ] Las fuentes tienen autor, título, año, URL o DOI y fecha de consulta.
+- [ ] Las métricas están interpretadas, no solamente enumeradas.
+- [ ] El archivo PDF o su enlace se abre sin solicitar autorización.
