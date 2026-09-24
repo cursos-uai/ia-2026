@@ -4,8 +4,7 @@
 
 - Integrantes:
 - Fecha:
-- Ejercicios seleccionados:
-- Roles asumidos en cada ejercicio:
+- Comisión:
 
 ## 1. Pregunta investigada
 
@@ -17,15 +16,12 @@ Escriban la pregunta concreta que intentaron responder.
 |---|---|---|---|---|
 | | | | | |
 
-## 3. Repositorio inspeccionado
+## 3. Relación entre Big Data y Machine Learning
 
-- Repositorio y URL:
-- Commit, etiqueta o fecha observada:
-- Licencia:
-- Lenguajes principales:
-- Dependencias:
-- Señales de mantenimiento:
-- Riesgo detectado antes de ejecutar:
+- Definición comparada:
+- Caso analizado:
+- Justificación sobre la necesidad de Big Data:
+- Conclusión acerca de la relación entre cantidad y calidad de los datos:
 
 ## 4. Entorno de ejecución
 
@@ -67,6 +63,9 @@ Incluyan salida, tabla, gráfico o captura necesaria. No incluyan secretos, clav
 - Posible sesgo:
 - Decisión que requiere supervisión humana:
 
-## 10. Próximo experimento
+## 10. Enlaces y próximo experimento
+
+- Enlace de lectura al notebook de Google Colab:
+- Verificación de permisos realizada:
 
 Propongan un cambio concreto y una forma de saber si mejora el resultado.
