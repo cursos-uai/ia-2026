@@ -3,9 +3,10 @@
 ## Identificación
 
 - Integrantes:
+- Comisión:
 - Fecha:
-- Ejercicios seleccionados:
-- Roles asumidos en cada ejercicio:
+- Enlace al PDF entregado (si corresponde):
+- Enlace al notebook de Google Colab con permiso de lectura:
 
 ## 1. Pregunta investigada
 
@@ -17,15 +18,13 @@ Escriban la pregunta concreta que intentaron responder.
 |---|---|---|---|---|
 | | | | | |
 
-## 3. Repositorio inspeccionado
+## 3. Caso y algoritmo seleccionados
 
-- Repositorio y URL:
-- Commit, etiqueta o fecha observada:
-- Licencia:
-- Lenguajes principales:
-- Dependencias:
-- Señales de mantenimiento:
-- Riesgo detectado antes de ejecutar:
+- Caso de aplicación:
+- Características de Big Data relevantes:
+- Problema de Machine Learning:
+- Algoritmo propuesto:
+- Justificación:
 
 ## 4. Entorno de ejecución
 
@@ -67,6 +66,14 @@ Incluyan salida, tabla, gráfico o captura necesaria. No incluyan secretos, clav
 - Posible sesgo:
 - Decisión que requiere supervisión humana:
 
-## 10. Próximo experimento
+## 10. Conclusión integradora
 
-Propongan un cambio concreto y una forma de saber si mejora el resultado.
+Relacionen las características de los datos, el algoritmo elegido, las métricas y las limitaciones observadas.
+
+## Lista de control previa a la entrega
+
+- [ ] El PDF incluye los dos ejercicios obligatorios.
+- [ ] El enlace al PDF abre sin solicitar permisos, si se entrega mediante enlace.
+- [ ] El enlace a Google Colab abre con permiso de lectura.
+- [ ] El notebook se ejecuta desde el inicio sin pasos ocultos.
+- [ ] Las fuentes y los recursos utilizados están citados.
