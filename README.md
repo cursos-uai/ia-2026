@@ -6,3 +6,4 @@ Materiales de apoyo para la cursada.
 
 - [Clase 3 - IA simbólica](clases/clase-03/README.md)
 - [Clase 4 - Programación lógica con Prolog](clases/clase-04/README.md)
+- [Clase 8 - Big Data y Machine Learning](clases/clase-08/README.md)
