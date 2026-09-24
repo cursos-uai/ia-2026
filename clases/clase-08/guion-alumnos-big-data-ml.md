@@ -369,6 +369,77 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Idea para recordar:** Primero se define el problema y la evaluación; después se compara qué modelo funciona mejor.
 
+### Cómo funciona cada familia
+
+#### Regresión lineal: predecir una cantidad
+
+La regresión lineal representa una salida continua mediante una suma ponderada:
+
+`ŷ = β₀ + β₁x₁ + ... + βₚxₚ`.
+
+Cada coeficiente `βⱼ` expresa cuánto cambia la predicción cuando aumenta la variable `xⱼ`, manteniendo las demás constantes. El entrenamiento suele elegir los coeficientes que minimizan la suma de errores cuadrados. Elevar el error al cuadrado penaliza especialmente los errores grandes y permite resolver el ajuste con métodos algebraicos o de optimización.
+
+Sirve para cantidades como precio, consumo o demanda. No es adecuada para fraude/no fraude: puede producir valores menores que 0 o mayores que 1 y su función de pérdida no representa bien una etiqueta binaria. Además, `R²` mide qué proporción de la variabilidad de una salida continua explica el modelo; no mide porcentaje de clasificaciones correctas.
+
+**Supuestos que conviene revisar:** relación aproximadamente lineal, residuos independientes, varianza relativamente constante y ausencia de colinealidad extrema. La normalidad de los residuos importa principalmente para ciertos intervalos y pruebas estadísticas, no para calcular la predicción.
+
+#### Regresión logística: estimar una probabilidad de clase
+
+La regresión logística también calcula una combinación lineal `z = β₀ + βᵀx`, pero la transforma con la función sigmoide:
+
+`P(y=1|x) = 1 / (1 + e⁻ᶻ)`.
+
+El resultado queda entre 0 y 1. Durante el entrenamiento se maximizan las probabilidades asignadas a las etiquetas observadas, lo que equivale a minimizar la pérdida logarítmica o *log loss*. Para obtener una clase se aplica un umbral: con `0,5`, por ejemplo, una probabilidad igual o superior se clasifica como positiva. Ese umbral no es una ley; en fraude debe elegirse según el costo de falsos positivos y falsos negativos.
+
+El coeficiente `βⱼ` actúa sobre el *log-odds*: al aumentar una unidad `xⱼ`, las *odds* se multiplican por `e^βⱼ`, si el resto permanece constante. La regularización L1 o L2 limita coeficientes excesivos y ayuda a controlar sobreajuste. Suele ser un buen *baseline* porque es rápida e interpretable, aunque sin transformar variables sólo construye una frontera lineal.
+
+#### Naive Bayes: actualizar probabilidades con evidencia
+
+El teorema de Bayes permite invertir una probabilidad condicional:
+
+`P(clase|x) ∝ P(x|clase) · P(clase)`.
+
+Naive Bayes simplifica el cálculo suponiendo que las características son condicionalmente independientes una vez conocida la clase. Así, `P(x|clase)` se obtiene multiplicando las contribuciones de cada variable. El supuesto suele ser falso en sentido estricto, pero el clasificador puede funcionar bien cuando las variables aportan señales complementarias, especialmente en texto.
+
+Las variantes dependen de los datos: Gaussian Naive Bayes modela variables continuas con distribuciones normales; Multinomial Naive Bayes trabaja bien con conteos, como palabras; Bernoulli Naive Bayes usa variables binarias. Es rápido y útil como referencia, pero probabilidades mal calibradas, variables muy correlacionadas o una distribución elegida incorrectamente pueden perjudicarlo. En fraude, además, el prior de la clase positiva debe reflejar que el evento es raro o ajustarse conscientemente.
+
+#### Árbol de decisión: aprender preguntas sucesivas
+
+Un árbol divide repetidamente los datos con reglas como `monto > 15000`. En clasificación elige cada división buscando reducir la impureza de los nodos. Dos criterios frecuentes son Gini y entropía: ambos son mínimos cuando un nodo contiene una sola clase. Las hojas guardan una clase o una proporción de clases.
+
+Los árboles capturan interacciones y relaciones no lineales sin exigir escalado. También pueden explicarse siguiendo el camino desde la raíz hasta una hoja. Sin límites de profundidad, cantidad mínima de ejemplos por hoja o poda, memorizan detalles del entrenamiento y tienen alta varianza: un pequeño cambio en los datos puede producir otro árbol.
+
+#### Random Forest: promediar muchos árboles distintos
+
+Un bosque aleatorio entrena numerosos árboles sobre muestras *bootstrap* y, en cada división, considera sólo un subconjunto aleatorio de variables. Las dos fuentes de azar reducen la correlación entre árboles. En clasificación se combinan sus votos o probabilidades.
+
+El promedio suele generalizar mejor que un árbol individual y permite modelar relaciones complejas. A cambio, pierde parte de la explicación directa de un solo árbol y puede requerir más memoria y tiempo de inferencia. La importancia de variables basada en reducción de impureza puede favorecer variables continuas o de alta cardinalidad; la importancia por permutación suele ofrecer una comprobación más fiable.
+
+#### SVM: buscar una frontera con margen amplio
+
+Una máquina de vectores de soporte busca el hiperplano que separa clases dejando el mayor margen posible. Sólo algunos casos cercanos a la frontera —los vectores de soporte— determinan la solución. El parámetro `C` controla el compromiso entre margen amplio y penalización de errores: un `C` grande castiga más las clasificaciones incorrectas y puede producir una frontera menos regularizada.
+
+Mediante un *kernel*, como el radial RBF, puede representar fronteras no lineales calculando similitudes sin construir explícitamente todas las nuevas dimensiones. SVM es sensible a la escala de las variables y sus probabilidades requieren una calibración adicional. Puede rendir bien con muchas dimensiones, pero el entrenamiento se vuelve costoso con conjuntos muy grandes.
+
+#### Red neuronal: componer transformaciones
+
+Una neurona calcula una suma ponderada, agrega un sesgo y aplica una función no lineal. Al apilar capas, la red puede representar relaciones complejas que una combinación lineal no capturaría. La salida binaria suele usar una sigmoide y pérdida logarítmica.
+
+El entrenamiento realiza una pasada hacia adelante para calcular la predicción, usa *backpropagation* para obtener derivadas mediante la regla de la cadena y actualiza los pesos con descenso por gradiente o una variante. La profundidad y las funciones de activación permiten aprender representaciones, pero no garantizan generalización: hacen falta validación, regularización, datos suficientes y monitoreo. En datos tabulares pequeños, un modelo más simple puede igualar o superar a una red y ser más fácil de explicar.
+
+### Comparación conceptual rápida
+
+| Técnica | Qué aprende | Frontera sin extensiones | Fortaleza típica | Riesgo principal |
+|---|---|---|---|---|
+| Regresión logística | probabilidad mediante log-odds | lineal | baseline interpretable | no captar relaciones no lineales |
+| Naive Bayes | probabilidades generativas por clase | depende de la distribución | rapidez y pocos datos | independencia/distribución irreales |
+| Árbol | reglas jerárquicas | no lineal | interacción y explicación local | sobreajuste e inestabilidad |
+| Random Forest | promedio de árboles | no lineal | robustez en datos tabulares | menor interpretabilidad |
+| SVM | frontera de margen máximo | lineal o no lineal con kernel | buen desempeño en alta dimensión | escalado y costo en grandes datos |
+| Red neuronal | composición de representaciones | no lineal | gran flexibilidad | datos, ajuste y explicación |
+
+**Referencias para profundizar:** [regresión lineal](https://scikit-learn.org/stable/modules/linear_model.html#ordinary-least-squares), [regresión logística](https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression), [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html), [árboles](https://scikit-learn.org/stable/modules/tree.html), [Random Forest](https://scikit-learn.org/stable/modules/ensemble.html#forest), [SVM](https://scikit-learn.org/stable/modules/svm.html) y [redes neuronales](https://www.deeplearningbook.org/contents/mlp.html).
+
 ## Diapositiva 16. IA, ML y aprendizaje profundo
 
 **Qué presenta:** relación de inclusión entre inteligencia artificial, Machine Learning y deep learning.
@@ -473,6 +544,18 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Aclaración:** Supervisado y no supervisado responden preguntas distintas y pueden complementarse.
 
+### Qué optimizan los algoritmos mencionados
+
+En aprendizaje supervisado, cada ejemplo contiene una etiqueta y la función de pérdida indica cuán costosa fue la predicción. Regresión logística, SVM, árboles, Naive Bayes y redes neuronales pueden producir clasificadores, pero llegan a la decisión por mecanismos diferentes: probabilidad discriminativa, margen, particiones, modelo probabilístico generativo y composición de transformaciones, respectivamente.
+
+En aprendizaje no supervisado no hay una respuesta correcta `y` con la cual calcular error de clasificación:
+
+- **K-Means** elige `k` centroides y alterna dos pasos: asigna cada caso al centro más cercano y recalcula cada centro como la media de su grupo. Minimiza la suma de distancias cuadradas dentro de los grupos. Por eso favorece grupos aproximadamente compactos y de escala semejante, es sensible al escalado, a valores extremos, a la inicialización y al valor de `k`. Un grupo pequeño no equivale por sí mismo a fraude.
+- **PCA** centra los datos y encuentra direcciones ortogonales de máxima varianza. Matemáticamente puede obtenerse mediante autovectores de la matriz de covarianza o mediante SVD. Cada componente es una combinación lineal de variables; los primeros componentes conservan tanta varianza como sea posible, pero no necesariamente la información más útil para distinguir fraude.
+- **SVD** factoriza una matriz `X` como `UΣVᵀ`. Los valores singulares de `Σ` ordenan la importancia de direcciones latentes. Truncar la factorización produce una aproximación de menor rango. PCA y SVD están relacionados, pero no son nombres intercambiables: PCA sobre datos centrados puede calcularse con SVD.
+
+**Referencias:** [K-Means](https://scikit-learn.org/stable/modules/clustering.html#k-means), [PCA](https://scikit-learn.org/stable/modules/decomposition.html#pca) y [SVD truncada](https://scikit-learn.org/stable/modules/decomposition.html#truncated-singular-value-decomposition-and-latent-semantic-analysis).
+
 ## Diapositiva 29. Lectura del dataset
 
 **Qué presenta:** carga de `creditcard_data.csv`, vista inicial y forma `(5050, 30)`.
@@ -498,6 +581,20 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 **Cómo entenderla:** RUS elimina ejemplos de la clase mayoritaria; ROS repite ejemplos minoritarios; SMOTE genera ejemplos sintéticos. Cada método tiene ventajas y riesgos. Debe compararse contra un baseline sin remuestreo.
 
 **Corrección:** Los ejemplos de SMOTE son sintéticos, no simplemente “falsos”. Pueden ayudar, pero también crear puntos poco realistas.
+
+### Cómo funcionan en detalle
+
+- **Random Under-Sampling (RUS):** selecciona al azar sólo una parte de la clase mayoritaria. Cambia la distribución de entrenamiento y reduce el costo computacional, pero puede descartar casos que definían regiones importantes de la frontera.
+- **Random Over-Sampling (ROS):** vuelve a muestrear con reemplazo casos de la clase minoritaria. No agrega información geométrica nueva; al repetir observaciones aumenta su influencia en la función de pérdida y puede favorecer el sobreajuste.
+- **SMOTE:** para cada ejemplo minoritario elegido, busca vecinos minoritarios cercanos, toma uno y crea `x_nuevo = x + λ(x_vecino - x)`, con `λ` entre 0 y 1. El punto sintético queda en el segmento que une ambos ejemplos. La técnica densifica regiones minoritarias, pero si hay ruido, superposición de clases o variables categóricas mal tratadas puede crear casos ambiguos o imposibles.
+- **Borderline-SMOTE:** concentra la síntesis en ejemplos minoritarios rodeados por muchos vecinos mayoritarios, es decir, cerca de la frontera. Puede ser útil porque refuerza la zona difícil, pero también amplifica ruido si esas observaciones están mal etiquetadas.
+- **Pesos de clase:** en vez de modificar los datos, asignan mayor costo a equivocarse en la clase minoritaria. En regresión logística o SVM esto modifica la función de pérdida. Es una alternativa importante para comparar con SMOTE.
+
+La distancia usada por SMOTE depende de la escala: una variable numéricamente grande puede dominar la noción de vecino. El escalado debe aprenderse dentro de cada partición de entrenamiento. Para datos mixtos existen variantes como SMOTENC; convertir categorías nominales en números y aplicar SMOTE estándar puede inventar valores sin significado.
+
+**Regla metodológica:** separación, imputación, escalado, selección de variables y remuestreo deben organizarse de modo que ningún dato de validación o test influya en el ajuste. En validación cruzada, SMOTE se ejecuta nuevamente dentro de cada *fold* de entrenamiento mediante un pipeline de `imbalanced-learn`.
+
+**Referencias:** [artículo original de SMOTE](https://www.jair.org/index.php/jair/article/view/10302), [guía de over-sampling](https://imbalanced-learn.org/stable/over_sampling.html) y [pipeline de imbalanced-learn](https://imbalanced-learn.org/stable/references/pipeline.html).
 
 ## Diapositiva 32. División y entrenamiento
 
@@ -542,6 +639,21 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 **Cómo debería resolverse:** Entrenar un clasificador, por ejemplo regresión logística. Obtener probabilidades, elegir un umbral y mostrar la matriz de confusión. Luego comparar precision, recall, F1 y PR-AUC. La métrica elegida debe reflejar el costo de dejar pasar fraudes y el costo de bloquear operaciones legítimas.
 
 **Pregunta de cierre:** ¿Qué resultado necesitarías para recomendar el modelo y qué daño podría causar una decisión equivocada?
+
+### Fundamento de la evaluación correcta
+
+La regresión logística se entrena minimizando *log loss*, pero el sistema se evalúa de acuerdo con la decisión de negocio. Si `TP`, `FP`, `TN` y `FN` representan las cuatro celdas de la matriz de confusión:
+
+- `precision = TP / (TP + FP)`: de las alertas generadas, cuántas eran fraude;
+- `recall = TP / (TP + FN)`: de los fraudes reales, cuántos fueron detectados;
+- `F1 = 2 · precision · recall / (precision + recall)`;
+- `accuracy = (TP + TN) / total`.
+
+Cambiar el umbral mueve el equilibrio entre precision y recall. La curva precision-recall muestra ese intercambio para muchos umbrales y resulta especialmente informativa cuando la clase positiva es rara. PR-AUC resume la curva, pero siempre debe acompañarse con la prevalencia, el protocolo de validación y métricas en un umbral operativo.
+
+Las probabilidades también deben comprobarse. Un modelo está bien calibrado si, entre los casos a los que asigna aproximadamente 0,20, cerca del 20 % resulta positivo. Buena discriminación y buena calibración son propiedades distintas. En producción, el umbral puede elegirse minimizando un costo esperado, por ejemplo `costo_FP·FP + costo_FN·FN`, además de restricciones como la capacidad diaria del equipo que revisa alertas.
+
+**Referencias:** [precision-recall](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html), [calibración de probabilidades](https://scikit-learn.org/stable/modules/calibration.html) y [evaluación de clasificadores](https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics).
 
 ---
 
