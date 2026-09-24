@@ -367,6 +367,42 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Cómo entenderla:** Son familias de modelos diferentes. Ninguna es mejor para todos los problemas. La elección depende del tipo de datos, cantidad de ejemplos, necesidad de interpretación, costo de entrenamiento y métrica relevante.
 
+### Red neuronal
+
+Una neurona calcula una combinación ponderada `z = w·x + b` y aplica una función no lineal. Al conectar neuronas en capas, la red puede representar fronteras complejas. Durante el entrenamiento, la salida se compara con la etiqueta mediante una función de pérdida; *backpropagation* calcula cómo contribuyó cada peso al error y un optimizador modifica los pesos para reducirlo.
+
+- **Qué aprende:** pesos y sesgos de las conexiones.
+- **Hiperparámetros importantes:** cantidad y tamaño de capas, función de activación, tasa de aprendizaje, tamaño de lote, épocas y regularización.
+- **Fortaleza:** modela relaciones muy no lineales.
+- **Límites:** suele necesitar más datos y cómputo; puede sobreajustar y no siempre es fácil explicar una predicción.
+
+### Máquina de vectores de soporte, SVM
+
+Una SVM lineal busca el hiperplano que separa las clases dejando el mayor margen posible. Los ejemplos que tocan o violan ese margen son los **vectores de soporte**: ellos determinan la frontera. El parámetro `C` controla el compromiso entre un margen amplio y penalizar errores. Con un *kernel*, como RBF, el algoritmo puede construir fronteras no lineales a partir de similitudes entre ejemplos sin calcular explícitamente todas las nuevas variables.
+
+- **Qué aprende:** una frontera definida principalmente por los vectores de soporte.
+- **Hiperparámetros importantes:** `C`; tipo de kernel; `gamma` en RBF.
+- **Fortaleza:** puede funcionar bien en espacios con muchas variables.
+- **Límites:** exige escalar variables; entrenar puede ser costoso con muchos ejemplos y la probabilidad no surge directamente del margen.
+
+### Árbol de decisión
+
+El árbol divide recursivamente los datos mediante preguntas del tipo `monto <= 5000`. En clasificación elige cortes que reduzcan la mezcla de clases, medida habitualmente con impureza de Gini o entropía. Una hoja devuelve la clase o la proporción de clases de los ejemplos que llegaron a ella.
+
+- **Qué aprende:** variable y umbral de cada nodo, y predicción de cada hoja.
+- **Hiperparámetros importantes:** profundidad máxima, mínimo de ejemplos para dividir o formar una hoja y criterio de impureza.
+- **Fortaleza:** captura interacciones y es relativamente interpretable.
+- **Límites:** un árbol profundo puede memorizar ruido y pequeños cambios en los datos pueden cambiar su estructura.
+
+### Random Forest
+
+Entrena muchos árboles sobre muestras *bootstrap* y considera un subconjunto aleatorio de variables en cada corte. En clasificación combina sus votos o probabilidades. Al reducir la correlación entre árboles, suele disminuir la varianza de un árbol individual.
+
+- **Qué aprende:** un conjunto de árboles diferentes.
+- **Hiperparámetros importantes:** número y profundidad de árboles, variables candidatas por corte y tamaños mínimos de hojas.
+- **Fortaleza:** baseline robusto para datos tabulares y relaciones no lineales.
+- **Límites:** el bosque completo es menos interpretable y una importancia de variables no demuestra causalidad.
+
 **Idea para recordar:** Primero se define el problema y la evaluación; después se compara qué modelo funciona mejor.
 
 ## Diapositiva 16. IA, ML y aprendizaje profundo
@@ -471,6 +507,43 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Cómo entenderla:** Si conocemos qué transacciones fueron fraude, podemos entrenar un clasificador supervisado. Si tenemos pocas etiquetas, podemos buscar casos atípicos o grupos mediante métodos no supervisados. PCA reduce dimensiones; K-Means agrupa ejemplos.
 
+### Regresión lineal y regresión logística no resuelven lo mismo
+
+La **regresión lineal** estima un valor continuo: `ŷ = β₀ + β₁x₁ + ... + βₚ xₚ`. Sus coeficientes suelen ajustarse minimizando la suma de errores cuadrados. La salida puede ser cualquier número, por lo que no representa necesariamente una probabilidad y no es adecuada como clasificador binario.
+
+La **regresión logística** primero calcula una combinación lineal y luego aplica la sigmoide: `p(y=1|x) = 1 / (1 + exp(-z))`. Se ajusta maximizando la verosimilitud, equivalente a minimizar la pérdida logarítmica. La clase se obtiene comparando la probabilidad con un umbral que no tiene por qué ser 0,5.
+
+- **Qué aprende:** un coeficiente por variable y un intercepto.
+- **Interpretación:** `exp(βⱼ)` es el cambio multiplicativo en los *odds* por una unidad de `xⱼ`, manteniendo las demás variables constantes.
+- **Hiperparámetros:** fuerza y tipo de regularización (`L1`, `L2`), pesos de clase y algoritmo de optimización.
+- **Límite:** la frontera es lineal en las variables suministradas; para interacciones o curvas hay que construir nuevas variables o elegir otro modelo.
+
+### Clasificador bayesiano ingenuo, Naive Bayes
+
+Aplica el teorema de Bayes: `P(clase|x) ∝ P(clase) P(x|clase)`. La simplificación "ingenua" supone que las variables son condicionalmente independientes dada la clase, lo cual permite factorizar `P(x|clase)` como un producto. En la práctica se calculan logaritmos para evitar problemas numéricos.
+
+- **Variantes:** Gaussian NB para variables continuas aproximadamente gaussianas por clase; Multinomial NB para conteos, frecuente en texto; Bernoulli NB para variables binarias.
+- **Qué aprende:** probabilidad previa de cada clase y parámetros de la distribución de cada variable condicionada a la clase.
+- **Fortaleza:** es rápido, requiere pocos datos y constituye un baseline valioso.
+- **Límite:** variables muy dependientes pueden contar la misma evidencia varias veces; sus probabilidades pueden necesitar calibración.
+
+### K-Means
+
+K-Means busca `k` centroides que minimicen la suma de distancias cuadráticas de cada punto a su centro asignado. Alterna dos pasos: asignar cada ejemplo al centroide más cercano y recalcular cada centroide como la media de su grupo. Converge a un óptimo local, por eso se prueban varias inicializaciones.
+
+- **Hiperparámetros:** número de grupos `k`, inicialización y número de reinicios.
+- **Supuestos prácticos:** variables comparables en escala y grupos aproximadamente compactos según distancia euclídea.
+- **Límite en fraude:** un grupo pequeño o un punto lejano no es automáticamente fraude; el algoritmo no conoce esa etiqueta.
+
+### PCA
+
+PCA centra los datos y busca direcciones ortogonales que capturen la mayor varianza. Puede calcularse mediante descomposición en valores singulares, SVD. Cada componente es una combinación lineal de las variables originales; los primeros componentes conservan la mayor parte de la varianza, no necesariamente la información más útil para predecir fraude.
+
+- **Qué aprende:** ejes principales y la varianza explicada por cada uno.
+- **Hiperparámetro principal:** cantidad de componentes o proporción de varianza a conservar.
+- **Fortaleza:** reduce redundancia y facilita visualización o compresión.
+- **Límites:** es lineal, sensible a las escalas y reduce interpretabilidad.
+
 **Aclaración:** Supervisado y no supervisado responden preguntas distintas y pueden complementarse.
 
 ## Diapositiva 29. Lectura del dataset
@@ -499,6 +572,15 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Corrección:** Los ejemplos de SMOTE son sintéticos, no simplemente “falsos”. Pueden ayudar, pero también crear puntos poco realistas.
 
+### Qué hace exactamente cada técnica
+
+- **Random Under-Sampling (RUS):** selecciona al azar una parte de la clase mayoritaria. Cambia la distribución del entrenamiento y reduce costo, pero descarta observaciones que podrían describir fronteras importantes.
+- **Random Over-Sampling (ROS):** muestrea con reemplazo observaciones minoritarias hasta alcanzar la proporción elegida. No inventa información nueva y hace que algunos ejemplos influyan más veces en la pérdida.
+- **SMOTE:** para un ejemplo minoritario `xᵢ`, elige uno de sus vecinos minoritarios `xⱼ` y genera `x_nuevo = xᵢ + λ(xⱼ - xᵢ)`, con `λ` entre 0 y 1. El nuevo punto queda sobre el segmento entre ambos.
+- **Borderline-SMOTE:** prioriza ejemplos minoritarios rodeados por muchos vecinos mayoritarios, es decir, cercanos a una posible frontera. Puede concentrar información útil, pero también amplificar ruido o etiquetas incorrectas.
+
+SMOTE usa distancias: las variables deben tener una representación y escala coherentes. Interpolar categorías codificadas como números puede producir combinaciones sin sentido; para datos mixtos existen variantes como SMOTENC. Ninguna de estas técnicas garantiza una mejora: se comparan mediante validación y con la métrica de negocio elegida.
+
 ## Diapositiva 32. División y entrenamiento
 
 **Qué presenta:** 80% para entrenamiento, 20% para prueba, SMOTE y regresión logística.
@@ -508,6 +590,15 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 **Actualización técnica:** La API mostrada está desactualizada. En versiones actuales se utiliza `fit_resample`. Para Borderline-SMOTE se usa una clase específica. También conviene `stratify=y` y `random_state` en la separación.
 
 **Buena práctica:** Integrar preprocesamiento, remuestreo y modelo en un pipeline durante la validación cruzada.
+
+### Por qué el orden evita una evaluación engañosa
+
+1. Separar el test preserva una muestra del problema real.
+2. Dentro de cada partición de entrenamiento se ajustan escalado, imputación y SMOTE.
+3. Esas transformaciones ya ajustadas se aplican a validación sin aprender de ella.
+4. Recién después de elegir el procedimiento se usa una sola vez el test final.
+
+Si se aplica SMOTE antes de dividir, un punto sintético del entrenamiento puede haber sido construido usando un vecino que luego aparece en test. La prueba deja de ser independiente. `stratify=y` conserva aproximadamente la proporción de clases, pero si los datos tienen tiempo, clientes repetidos o comercios compartidos puede ser necesario dividir por tiempo o por grupo para evitar otra forma de fuga.
 
 ## Diapositiva 33. Sistema de reglas
 
@@ -541,11 +632,43 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Cómo debería resolverse:** Entrenar un clasificador, por ejemplo regresión logística. Obtener probabilidades, elegir un umbral y mostrar la matriz de confusión. Luego comparar precision, recall, F1 y PR-AUC. La métrica elegida debe reflejar el costo de dejar pasar fraudes y el costo de bloquear operaciones legítimas.
 
+### Qué optimiza cada modelo y qué significa su salida
+
+- `LinearRegression` minimiza errores cuadrados entre un valor numérico real y uno estimado. `R²` compara ese error con el de predecir siempre la media; puede ser negativo y no mide aciertos de clase.
+- `LogisticRegression` minimiza pérdida logarítmica para estimar `P(fraude|x)`. El umbral transforma esa estimación en una decisión.
+- Un umbral menor suele aumentar recall y falsas alarmas; uno mayor suele aumentar precision y dejar pasar más fraudes. La curva precision-recall muestra ese intercambio.
+- `class_weight="balanced"` aumenta la penalización de equivocarse en la clase escasa. No crea ejemplos y no es equivalente a SMOTE, aunque ambos intentan evitar que la mayoría domine el aprendizaje.
+
 **Pregunta de cierre:** ¿Qué resultado necesitarías para recomendar el modelo y qué daño podría causar una decisión equivocada?
 
 ---
 
-# Parte 3. Recorrido de estudio sugerido
+# Parte 3. Referencias para profundizar en las técnicas
+
+Las referencias de documentación sirven como puente hacia la implementación; los artículos originales permiten estudiar la formulación y los experimentos que introdujeron cada método.
+
+- Scikit-learn, [modelos lineales y regresión logística](https://scikit-learn.org/stable/modules/linear_model.html).
+- Scikit-learn, [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html).
+- Scikit-learn, [máquinas de vectores de soporte](https://scikit-learn.org/stable/modules/svm.html); Cortes y Vapnik (1995), [*Support-vector networks*](https://doi.org/10.1007/BF00994018).
+- Scikit-learn, [árboles de decisión](https://scikit-learn.org/stable/modules/tree.html) y [métodos de ensamble](https://scikit-learn.org/stable/modules/ensemble.html); Breiman (2001), [*Random Forests*](https://doi.org/10.1023/A:1010933404324).
+- Scikit-learn, [redes neuronales supervisadas](https://scikit-learn.org/stable/modules/neural_networks_supervised.html).
+- Scikit-learn, [K-Means](https://scikit-learn.org/stable/modules/clustering.html#k-means) y [PCA](https://scikit-learn.org/stable/modules/decomposition.html#pca).
+- Chawla, Bowyer, Hall y Kegelmeyer (2002), [*SMOTE: Synthetic Minority Over-sampling Technique*](https://doi.org/10.1613/jair.953); imbalanced-learn, [guía de remuestreo](https://imbalanced-learn.org/stable/user_guide.html).
+- Scikit-learn, [precision, recall y F-measure](https://scikit-learn.org/stable/modules/model_evaluation.html#precision-recall-f-measure-metrics) y [ajuste del umbral de decisión](https://scikit-learn.org/stable/modules/classification_threshold.html).
+
+## Guía de lectura teórica
+
+Para cada algoritmo, intentá responder en este orden:
+
+1. ¿Qué representa una entrada y cuál es la salida?
+2. ¿Qué parámetros aprende a partir de los datos?
+3. ¿Qué función objetivo o criterio intenta optimizar?
+4. ¿Qué supuestos hace sobre los datos?
+5. ¿Qué hiperparámetros decide la persona antes de entrenar?
+6. ¿Qué error puede cometer y con qué métrica se observa?
+7. ¿Cómo sabríamos si la salida puede usarse para tomar una decisión real?
+
+# Parte 4. Recorrido de estudio sugerido
 
 ## Antes de la clase
 
@@ -574,7 +697,7 @@ Prepará una ficha con:
 - una limitación técnica;
 - un riesgo ético o de privacidad.
 
-# Parte 4. Autoevaluación
+# Parte 5. Autoevaluación
 
 1. ¿Por qué Big Data no significa solamente gran volumen?
 2. ¿Puede existir Machine Learning sin Big Data? Incluí un ejemplo.
@@ -586,6 +709,12 @@ Prepará una ficha con:
 8. ¿Qué diferencia existe entre procesamiento batch y streaming?
 9. ¿Qué funciones cumplen Data Lake, Data Warehouse y Feature Store?
 10. ¿Por qué `LinearRegression` con `R²` no valida un detector binario de fraude?
+11. ¿Qué diferencia existe entre los parámetros que aprende un modelo y sus hiperparámetros?
+12. ¿Qué supuesto de Naive Bayes se considera “ingenuo” y por qué aun así puede funcionar bien?
+13. ¿Qué ejemplos determinan principalmente la frontera de una SVM?
+14. ¿Por qué un Random Forest suele ser más estable que un único árbol?
+15. ¿Por qué un clúster pequeño de K-Means no equivale a fraude?
+16. ¿Qué problema puede aparecer si aplicamos SMOTE a categorías codificadas como enteros?
 
 # Frase guía de la clase
 
