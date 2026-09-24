@@ -17,11 +17,10 @@ Al finalizar la clase, los estudiantes deberían poder:
 
 - [Guion completo para alumnos](guion-alumnos-big-data-ml.md): diccionario ampliado, explicación de las 36 diapositivas y autoevaluación.
 - [Guion y diccionario resumidos](guion-y-diccionario.md): versión breve para consulta durante la clase.
-- [Ejercicios ampliados de indagación y repositorios](ejercicios-indagacion-y-repositorios.md): seis recorridos con literatura, auditoría de GitHub, métricas, SMOTE, fraude reproducible y Spark.
-- [Ejercicios de investigación y laboratorio](ejercicios-investigacion-y-laboratorio.md): actividades adicionales y consignas de profundización.
+- [Actividad registrada: dos ejercicios y entrega](ejercicios-indagacion-y-repositorios.md): una indagación sobre Big Data y Machine Learning y un experimento técnico reproducible en Google Colab.
 - [Experimento reproducible sobre clases desbalanceadas](laboratorio_desbalance.py)
 - [Dependencias mínimas](requirements.txt)
-- [Plantilla de entrega](plantilla-entrega.md): registro de fuentes, entorno, evidencia, límites y riesgos.
+- [Plantilla de entrega](plantilla-entrega.md): estructura sugerida para el único PDF que integra ambos ejercicios.
 
 ## Ejecución rápida
 
@@ -36,9 +35,8 @@ El laboratorio usa datos sintéticos y no descarga información privada ni finan
 
 ## Recorrido sugerido
 
-- Antes de clase: investigación sobre Big Data y auditoría de un repositorio.
-- Durante la clase: laboratorio de métricas y ejercicio de SMOTE sin fuga de datos.
-- Después de clase: reproducción de una sección del Fraud Detection Handbook.
-- Profundización opcional: arquitectura batch/streaming y prueba local con Spark.
+- Antes de clase: lectura del enunciado y elección de un caso real para investigar.
+- Durante la clase: desarrollo del experimento de clasificación en Google Colab.
+- Después de clase: integración de la indagación y los resultados técnicos en un único PDF.
 
-Los equipos pueden trabajar en roles rotativos de investigador, ejecutor y revisor. Toda entrega debe citar fuentes, registrar versiones y distinguir resultados observados de conclusiones generales.
+Toda entrega debe citar fuentes, registrar versiones y distinguir resultados observados de conclusiones generales. La actividad se entrega en Ultra como archivo PDF o enlace público a un PDF e incluye un enlace de lectura al notebook de Google Colab.
