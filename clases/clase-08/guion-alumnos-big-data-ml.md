@@ -363,11 +363,65 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 ## Diapositiva 15. Técnicas para construir modelos
 
-**Qué presenta:** redes neuronales, SVM y árboles de decisión.
+**Qué presenta:** redes neuronales, máquinas de vectores de soporte (SVM) y árboles de decisión. Para compararlas, conviene sumar dos referencias básicas: regresión logística y Naive Bayes.
 
-**Cómo entenderla:** Son familias de modelos diferentes. Ninguna es mejor para todos los problemas. La elección depende del tipo de datos, cantidad de ejemplos, necesidad de interpretación, costo de entrenamiento y métrica relevante.
+### Regresión logística: una probabilidad a partir de una combinación lineal
 
-**Idea para recordar:** Primero se define el problema y la evaluación; después se compara qué modelo funciona mejor.
+Para una entrada con variables \(x_1,\ldots,x_p\), calcula primero un puntaje
+
+\[
+z=b+w_1x_1+\cdots+w_px_p
+\]
+
+y lo transforma con la función sigmoide:
+
+\[
+P(y=1\mid x)=\sigma(z)=\frac{1}{1+e^{-z}}.
+\]
+
+El entrenamiento busca los pesos que minimizan la *log loss* o entropía cruzada: asignar baja probabilidad a la clase verdadera recibe una penalización grande. Un umbral —no necesariamente 0,5— convierte la probabilidad en clase. La frontera es lineal en las variables de entrada, aunque pueden agregarse interacciones o transformaciones no lineales.
+
+**Supuestos y límites:** las observaciones deben aportar información suficiente y la relación entre variables y *log-odds* debe poder aproximarse linealmente. Variables muy correlacionadas vuelven inestables los coeficientes; regularización L1 o L2 ayuda a limitar su magnitud. Los coeficientes describen cambios en *log-odds*, no causalidad.
+
+### Naive Bayes: actualizar una probabilidad con evidencia
+
+Parte del teorema de Bayes:
+
+\[
+P(y\mid x)=\frac{P(x\mid y)P(y)}{P(x)}.
+\]
+
+Para decidir una clase basta comparar \(P(y)P(x\mid y)\). La simplificación "naive" supone independencia condicional entre características dada la clase:
+
+\[
+P(x\mid y)=\prod_j P(x_j\mid y).
+\]
+
+El algoritmo estima una probabilidad previa \(P(y)\) y la distribución de cada variable dentro de cada clase. Gaussian Naive Bayes modela variables continuas con gaussianas; Multinomial NB se usa con conteos —por ejemplo, palabras— y Bernoulli NB con presencia/ausencia. Se calculan logaritmos para evitar subdesbordamiento numérico.
+
+**Fortalezas y límites:** es rápido y funciona bien con pocos datos o alta dimensionalidad, especialmente en texto. La independencia rara vez se cumple exactamente; aun así puede clasificar bien. Sus probabilidades pueden quedar mal calibradas y una frecuencia cero requiere suavizado, como Laplace.
+
+### SVM: buscar una frontera con margen máximo
+
+Una SVM lineal busca el hiperplano \(w^Tx+b=0\) que separa las clases dejando el mayor margen posible. Sólo algunos casos cercanos a la frontera —los **vectores de soporte**— determinan la solución. Si hay solapamiento, el parámetro \(C\) equilibra margen amplio y penalización de errores: un \(C\) grande castiga más los errores; uno pequeño regulariza más.
+
+Un *kernel* reemplaza el producto interno por una función de similitud y permite fronteras no lineales sin construir explícitamente todas las nuevas dimensiones. En el kernel RBF, \(\gamma\) controla cuánto influye cada ejemplo. Las variables deben escalarse y \(C\), \(\gamma\) y el kernel deben elegirse con validación, no con el test final.
+
+**Fortalezas y límites:** puede funcionar muy bien en espacios de muchas dimensiones, pero entrenar y ajustar kernels puede ser costoso en datasets grandes. El puntaje de una SVM no es una probabilidad salvo que se agregue calibración.
+
+### Árbol de decisión y Random Forest
+
+Un árbol elige preguntas del tipo \(x_j<t\) que vuelven más puros los nodos hijos. En clasificación suelen usarse impureza Gini o entropía. El proceso continúa de manera voraz: el mejor corte local no garantiza el árbol global óptimo. Profundidad, cantidad mínima de ejemplos por hoja y poda controlan el sobreajuste.
+
+Random Forest entrena muchos árboles sobre muestras *bootstrap* y prueba un subconjunto aleatorio de variables en cada división. La predicción se obtiene por voto o promedio. La aleatoriedad reduce la correlación entre árboles y el promedio reduce varianza; no elimina sesgos del dataset ni vuelve causal la importancia de variables.
+
+### Red neuronal: composición de transformaciones
+
+Cada neurona calcula \(a=\phi(w^Tx+b)\), donde \(\phi\) es una activación no lineal. Al apilar capas, la red puede representar relaciones complejas. Durante *forward propagation* produce una salida; la función de pérdida mide el error; *backpropagation* aplica la regla de la cadena para obtener gradientes, y un optimizador actualiza los pesos.
+
+Sin activaciones no lineales, muchas capas equivaldrían a una sola transformación lineal. Profundidad, cantidad de unidades, tasa de aprendizaje, regularización y datos disponibles determinan el resultado. Las redes son flexibles, pero suelen necesitar más datos y cómputo, y no garantizan interpretabilidad ni buena calibración.
+
+**Idea para recordar:** no existe un algoritmo universalmente mejor. Primero se fija el problema, la métrica y el protocolo de evaluación; luego se comparan modelos bajo las mismas particiones y costos.
 
 ## Diapositiva 16. IA, ML y aprendizaje profundo
 
@@ -469,9 +523,21 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Qué presenta:** algoritmos de ambas familias.
 
-**Cómo entenderla:** Si conocemos qué transacciones fueron fraude, podemos entrenar un clasificador supervisado. Si tenemos pocas etiquetas, podemos buscar casos atípicos o grupos mediante métodos no supervisados. PCA reduce dimensiones; K-Means agrupa ejemplos.
+**Cómo entenderla:** Si conocemos qué transacciones fueron fraude, podemos entrenar un clasificador supervisado: regresión logística, Naive Bayes, SVM, árboles o redes aprenden una relación entre \(X\) e \(y\). Si no tenemos etiquetas, los métodos no supervisados sólo encuentran estructura en \(X\); no saben por sí mismos qué grupo significa "fraude".
 
-**Aclaración:** Supervisado y no supervisado responden preguntas distintas y pueden complementarse.
+### K-Means
+
+Busca \(K\) centroides que minimicen la suma de distancias cuadradas de cada punto a su centro asignado. Alterna dos pasos: asignar cada ejemplo al centro más cercano y recalcular cada centro como la media de sus ejemplos. Cada iteración no aumenta el objetivo, pero puede converger a un mínimo local; por eso se prueban varias inicializaciones, habitualmente `k-means++`.
+
+**Supuestos y límites:** favorece grupos aproximadamente esféricos, de escala y densidad semejantes. Es sensible a escala, valores extremos y elección de \(K\). Debe estandarizarse cuando las unidades difieren. Un clúster pequeño o lejano no es automáticamente fraude.
+
+### PCA
+
+Centra los datos y encuentra direcciones ortogonales de máxima varianza. Algebraicamente, son los autovectores de la matriz de covarianza; en la práctica suele calcularse con descomposición en valores singulares (SVD). El primer componente explica la mayor varianza posible, el segundo la mayor varianza restante y así sucesivamente.
+
+**Supuestos y límites:** PCA es una proyección lineal y no usa la etiqueta. Mucha varianza no equivale a mucha capacidad predictiva: una señal de fraude con poca varianza podría descartarse. El escalado modifica el resultado y los componentes son combinaciones de variables que pueden ser difíciles de interpretar.
+
+**Aclaración:** supervisado y no supervisado responden preguntas distintas y pueden complementarse. K-Means y PCA sirven para explorar o construir variables, pero su salida debe validarse contra etiquetas y decisiones del negocio antes de llamarla detector de fraude.
 
 ## Diapositiva 29. Lectura del dataset
 
@@ -495,9 +561,19 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Qué presenta:** tres estrategias ante el desbalance.
 
-**Cómo entenderla:** RUS elimina ejemplos de la clase mayoritaria; ROS repite ejemplos minoritarios; SMOTE genera ejemplos sintéticos. Cada método tiene ventajas y riesgos. Debe compararse contra un baseline sin remuestreo.
+**Cómo entenderla:** RUS elimina al azar ejemplos de la clase mayoritaria; reduce tiempo y puede equilibrar el aprendizaje, pero descarta información. ROS replica ejemplos minoritarios; no pierde datos, aunque repetirlos puede favorecer sobreajuste.
 
-**Corrección:** Los ejemplos de SMOTE son sintéticos, no simplemente “falsos”. Pueden ayudar, pero también crear puntos poco realistas.
+SMOTE elige un ejemplo minoritario \(x_i\), uno de sus vecinos minoritarios \(x_j\) y genera
+
+\[
+x_{nuevo}=x_i+\lambda(x_j-x_i),\qquad \lambda\in[0,1].
+\]
+
+El nuevo punto queda sobre el segmento entre ambos ejemplos. No es una copia, pero tampoco es una observación real. Si los vecinos mezclan regiones o contienen ruido, SMOTE puede crear puntos ambiguos; además, la interpolación ordinaria no corresponde directamente a categorías sin un método adaptado.
+
+Borderline-SMOTE concentra la generación en ejemplos minoritarios cercanos a la frontera. `class_weight` ofrece otra estrategia: conserva los datos y aumenta el costo de equivocarse en la clase minoritaria. Ninguna técnica debe aceptarse sólo porque equilibra conteos: hay que comparar precision, recall, PR-AUC, calibración y costo operativo.
+
+**Regla crítica:** separar primero el test. Dentro de validación cruzada, el remuestreo debe ajustarse nuevamente sólo con el fold de entrenamiento. Remuestrear antes de dividir permite que información derivada de validación o test llegue al entrenamiento y produce una evaluación optimista.
 
 ## Diapositiva 32. División y entrenamiento
 
@@ -508,6 +584,12 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 **Actualización técnica:** La API mostrada está desactualizada. En versiones actuales se utiliza `fit_resample`. Para Borderline-SMOTE se usa una clase específica. También conviene `stratify=y` y `random_state` en la separación.
 
 **Buena práctica:** Integrar preprocesamiento, remuestreo y modelo en un pipeline durante la validación cruzada.
+
+### Qué aprende la regresión logística en este flujo
+
+El modelo no aprende una regla fija de fraude: ajusta un peso por variable para minimizar la entropía cruzada regularizada. Con `class_weight="balanced"`, los errores de la clase escasa pesan más durante el ajuste; con SMOTE cambia la muestra usada para estimar la frontera. Son intervenciones diferentes y deben compararse, no acumularse automáticamente.
+
+El método `predict_proba` entrega un puntaje entre 0 y 1 según el modelo. El umbral se selecciona con validación y una función de costo; elegirlo mirando el test contamina la evaluación final. Si se necesita interpretar el puntaje como probabilidad, también debe revisarse su calibración.
 
 ## Diapositiva 33. Sistema de reglas
 
@@ -541,7 +623,32 @@ Situación en la que información del conjunto de prueba influye en el entrenami
 
 **Cómo debería resolverse:** Entrenar un clasificador, por ejemplo regresión logística. Obtener probabilidades, elegir un umbral y mostrar la matriz de confusión. Luego comparar precision, recall, F1 y PR-AUC. La métrica elegida debe reflejar el costo de dejar pasar fraudes y el costo de bloquear operaciones legítimas.
 
+### Por qué regresión lineal y R² no responden esta pregunta
+
+La regresión lineal minimiza errores cuadrados para una variable continua y puede producir valores menores que 0 o mayores que 1. \(R^2=1-SS_{res}/SS_{tot}\) compara ese error cuadrático con predecir la media: no cuenta aciertos ni define una clase. Tratar sus salidas como probabilidades viola la forma del problema.
+
+La regresión logística, en cambio, limita la salida a \([0,1]\) y optimiza una pérdida diseñada para etiquetas binarias. Esto no la vuelve automáticamente buena: aún necesita partición correcta, comparación con baselines, métricas por clase, selección de umbral y validación temporal cuando el fraude cambia con el tiempo.
+
 **Pregunta de cierre:** ¿Qué resultado necesitarías para recomendar el modelo y qué daño podría causar una decisión equivocada?
+
+---
+
+# Referencias para profundizar en los algoritmos
+
+Las referencias de implementación ayudan a reproducir los métodos; los artículos y libros explican su fundamento. Conviene leer ambas capas.
+
+- Scikit-learn, [guía de modelos supervisados](https://scikit-learn.org/stable/supervised_learning.html): regresión logística, Naive Bayes, SVM, árboles, ensembles y redes neuronales, con formulación matemática y parámetros.
+- Scikit-learn, [K-Means](https://scikit-learn.org/stable/modules/clustering.html#k-means) y [PCA](https://scikit-learn.org/stable/modules/decomposition.html#pca): objetivos, algoritmos, complejidad y límites prácticos.
+- Cortes, C. y Vapnik, V. (1995), [Support-Vector Networks](https://doi.org/10.1007/BF00994018), *Machine Learning* 20: fundamento del margen máximo y los kernels.
+- Breiman, L. et al. (1984), [Classification and Regression Trees](https://doi.org/10.1201/9781315139470): referencia clásica sobre construcción y poda de árboles.
+- Breiman, L. (2001), [Random Forests](https://doi.org/10.1023/A:1010933404324), *Machine Learning* 45: árboles aleatorizados, voto, fuerza y correlación del ensemble.
+- Rumelhart, D. E., Hinton, G. E. y Williams, R. J. (1986), [Learning representations by back-propagating errors](https://doi.org/10.1038/323533a0), *Nature* 323: formulación clásica de backpropagation.
+- Ng, A. y Jordan, M. (2002), [On Discriminative vs. Generative Classifiers](https://proceedings.neurips.cc/paper/2001/hash/7b7a53e239400a13bd6be6c91c4f6c4e-Abstract.html): comparación teórica entre regresión logística y Naive Bayes.
+- Lloyd, S. (1982), [Least Squares Quantization in PCM](https://doi.org/10.1109/TIT.1982.1056489), *IEEE Transactions on Information Theory*: base del algoritmo iterativo asociado a K-Means.
+- Jolliffe, I. T. y Cadima, J. (2016), [Principal component analysis: a review and recent developments](https://doi.org/10.1098/rsta.2015.0202): interpretación y fundamentos de PCA.
+- Chawla, N. V. et al. (2002), [SMOTE: Synthetic Minority Over-sampling Technique](https://doi.org/10.1613/jair.953), *Journal of Artificial Intelligence Research* 16: método original y evaluación.
+- Imbalanced-learn, [errores comunes y fuga de información al remuestrear](https://imbalanced-learn.org/stable/common_pitfalls.html): ejemplos reproducibles de por qué el test debe quedar intacto.
+- Saito, T. y Rehmsmeier, M. (2015), [The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets](https://doi.org/10.1371/journal.pone.0118432): fundamento para usar curvas precision-recall con clases escasas.
 
 ---
 
