@@ -166,6 +166,9 @@ Modelo de clasificación que estima la probabilidad de pertenecer a una clase. A
 **Regresión lineal**  
 Modelo para estimar un valor numérico continuo. No es la opción apropiada para enseñar detección binaria de fraude.
 
+**Naive Bayes o clasificador bayesiano ingenuo**
+Familia de clasificadores probabilísticos que aplica el teorema de Bayes y supone independencia condicional entre las características dada la clase. El supuesto rara vez se cumple exactamente, pero el método puede funcionar bien, especialmente con texto y datos de alta dimensión.
+
 **Red neuronal artificial**  
 Modelo compuesto por capas de unidades conectadas que ajustan pesos durante el entrenamiento.
 
@@ -423,6 +426,86 @@ Sin activaciones no lineales, muchas capas equivaldrían a una sola transformaci
 
 **Idea para recordar:** no existe un algoritmo universalmente mejor. Primero se fija el problema, la métrica y el protocolo de evaluación; luego se comparan modelos bajo las mismas particiones y costos.
 
+### Cómo funciona cada familia
+
+#### Regresión lineal
+
+Busca una función de la forma `ŷ = β₀ + β₁x₁ + ... + βₚxₚ`. Durante el entrenamiento elige los coeficientes `β` que minimizan, habitualmente, la suma de los errores cuadrados entre el valor real `y` y la predicción `ŷ`. Cada coeficiente expresa cuánto cambia la salida esperada cuando cambia una variable y las demás se mantienen constantes.
+
+- **Sirve para:** predecir cantidades continuas, como precio, temperatura o demanda.
+- **Supone:** una relación aproximadamente lineal, observaciones independientes y residuos con varianza razonablemente estable. La inferencia estadística clásica agrega otros supuestos.
+- **No sirve directamente para fraude binario:** puede producir valores menores que 0 o mayores que 1 y su función de pérdida no está diseñada para clases.
+- **Regularización:** Ridge agrega una penalización L2 y Lasso una L1. Ambas limitan coeficientes grandes; Lasso puede llevar algunos exactamente a cero.
+
+#### Regresión logística
+
+Aunque se llama “regresión”, es un clasificador. Primero calcula una combinación lineal `z = β₀ + β₁x₁ + ... + βₚxₚ` y luego aplica la función sigmoide `p = 1 / (1 + e⁻ᶻ)`. El resultado queda entre 0 y 1 y se interpreta, con cautela y después de validar calibración, como probabilidad de la clase positiva.
+
+El entrenamiento no minimiza error cuadrático: maximiza la verosimilitud de las etiquetas observadas, equivalente a minimizar la pérdida logarítmica. Para decidir fraude/no fraude se compara `p` con un umbral. `0,5` es solo un valor convencional; en fraude se elige según los costos de falsos positivos y falsos negativos.
+
+- **Ventaja:** baseline rápido, interpretable y probabilístico.
+- **Supuesto importante:** el logaritmo de las chances, `log(p/(1-p))`, es lineal en las variables; no exige que la probabilidad misma sea lineal.
+- **Límite:** necesita crear explícitamente interacciones o transformaciones si la frontera es muy no lineal.
+- **En datos desbalanceados:** `class_weight="balanced"` aumenta el costo de equivocarse en la clase minoritaria, pero no reemplaza la selección del umbral ni una evaluación realista.
+
+#### Naive Bayes o clasificador bayesiano ingenuo
+
+Usa el teorema de Bayes: `P(clase | datos) ∝ P(datos | clase) × P(clase)`. Calcula una probabilidad para cada clase y elige la mayor. Se llama “ingenuo” porque supone que las características son condicionalmente independientes dada la clase. Esa hipótesis rara vez es literalmente cierta, pero el método puede clasificar bien cuando las estimaciones aproximadas alcanzan para ordenar las clases.
+
+- **GaussianNB:** modela cada variable continua con una distribución normal dentro de cada clase.
+- **MultinomialNB:** funciona con conteos o frecuencias, por ejemplo palabras de un documento.
+- **BernoulliNB:** trabaja con variables binarias, por ejemplo presencia o ausencia de un término.
+- **Ventajas:** rápido, requiere pocos datos y es un baseline fuerte para texto.
+- **Límites:** probabilidades con frecuencia mal calibradas y pérdida de información cuando las variables están muy correlacionadas. En fraude tabular no debe elegirse sin comprobar si su modelo de distribución resulta razonable.
+
+#### Árbol de decisión
+
+Divide el espacio mediante preguntas del tipo `monto ≤ 500`. En cada nodo prueba divisiones y elige la que más reduce la impureza. En clasificación se usan, entre otros, el índice Gini `1 − Σ pₖ²` o la entropía `−Σ pₖ log₂ pₖ`. El proceso continúa recursivamente hasta cumplir una condición de parada.
+
+- **Ventajas:** captura relaciones no lineales e interacciones, requiere poco preprocesamiento y permite explicar una ruta de decisión.
+- **Límite principal:** un árbol profundo tiene alta varianza y puede memorizar ruido.
+- **Control:** limitar profundidad, tamaño mínimo de hoja o podar el árbol.
+- **Cuidado:** la “importancia de variables” basada en impureza puede favorecer variables con muchas oportunidades de corte; conviene contrastarla con permutación y conocimiento del dominio.
+
+#### Random Forest
+
+Entrena muchos árboles sobre muestras bootstrap del entrenamiento. Además, cada división considera solo un subconjunto aleatorio de variables. La predicción final se obtiene por voto o promedio. Promediar árboles poco correlacionados reduce la varianza respecto de un árbol individual.
+
+- **Ventajas:** buen desempeño tabular, relaciones no lineales y menor sensibilidad a hiperparámetros que un árbol único.
+- **Costos:** menor interpretabilidad global, mayor memoria y tiempo de inferencia.
+- **No confundir:** agregar árboles no corrige etiquetas incorrectas, fuga de datos o una métrica mal elegida.
+
+#### Máquina de vectores de soporte, SVM
+
+Busca un hiperplano que separe las clases dejando el mayor margen posible. Solo algunos ejemplos cercanos a la frontera —los vectores de soporte— determinan la solución. El parámetro `C` regula el compromiso: un `C` grande penaliza más los errores y produce una frontera menos tolerante; uno pequeño acepta más errores para obtener mayor regularización.
+
+Con el *kernel trick* se calculan similitudes como si los datos se proyectaran a un espacio de mayor dimensión. El kernel RBF permite fronteras no lineales; `gamma` controla cuán local es la influencia de cada ejemplo.
+
+- **Necesita:** escalar variables y ajustar `C`, kernel y, cuando corresponda, `gamma` usando validación.
+- **Ventaja:** puede funcionar bien en espacios de alta dimensión.
+- **Límites:** entrenamiento costoso en datasets muy grandes y probabilidades no nativas; `probability=True` agrega una etapa de calibración.
+
+#### Red neuronal
+
+Cada neurona calcula una suma ponderada, agrega un sesgo y aplica una función no lineal. Al encadenar capas, la red puede representar relaciones complejas. En una clasificación binaria, la salida suele ser una sigmoide y la pérdida, entropía cruzada.
+
+El aprendizaje sigue un ciclo: propagación hacia adelante, cálculo de la pérdida, retropropagación de gradientes y actualización de pesos con descenso por gradiente o una variante como Adam. Una **época** es un recorrido por los datos; un **batch** es el subconjunto usado para una actualización.
+
+- **Ventajas:** gran flexibilidad y aprendizaje de representaciones, especialmente en imágenes, audio y texto.
+- **Límites:** necesita decisiones de arquitectura, ajuste, regularización y monitoreo; con pocos datos tabulares no es automáticamente mejor que modelos más simples.
+- **Riesgos:** sobreajuste, sensibilidad a escala y dificultad para explicar decisiones. Se mitigan con validación, regularización, *dropout*, parada temprana y supervisión humana.
+
+### Comparación razonada
+
+| Modelo | Frontera | Salida típica | Interpretabilidad | Preprocesamiento clave |
+|---|---|---|---|---|
+| Regresión logística | Lineal en el logit | Probabilidad | Alta | Escala útil; categorías codificadas |
+| Naive Bayes | Según el modelo probabilístico | Probabilidad aproximada | Media/alta | Elegir variante acorde a los datos |
+| Árbol | Cortes rectangulares | Clase/proporción de hoja | Alta localmente | Poco; controlar profundidad |
+| Random Forest | No lineal por ensamble | Voto/probabilidad | Media/baja | Poco; validar calibración |
+| SVM | Lineal o definida por kernel | Margen; probabilidad opcional | Baja/media | Escalado imprescindible |
+| Red neuronal | Muy flexible | Puntaje/probabilidad | Baja | Escalado, arquitectura y regularización |
+
 ## Diapositiva 16. IA, ML y aprendizaje profundo
 
 **Qué presenta:** relación de inclusión entre inteligencia artificial, Machine Learning y deep learning.
@@ -462,6 +545,14 @@ Sin activaciones no lineales, muchas capas equivaldrían a una sola transformaci
 **Cómo entenderla:** Hadoop reúne componentes para trabajar con datos distribuidos. HDFS almacena archivos; MapReduce procesa lotes; otras herramientas del ecosistema cubren consultas, bases y flujos. Spark puede integrarse, pero es un proyecto distinto.
 
 **Advertencia:** No todos los componentes ofrecen la misma latencia ni sirven para la misma tarea.
+
+### Cómo funciona MapReduce
+
+El modelo trabaja con pares clave–valor. `map(k1, v1)` transforma cada registro de entrada y emite cero o más pares intermedios `(k2, v2)`. Luego el sistema agrupa y ordena los valores por clave durante la fase *shuffle*. Finalmente, `reduce(k2, [v2])` combina todos los valores asociados con esa clave. En WordCount, `map` emite `(palabra, 1)` y `reduce` suma los unos de cada palabra.
+
+El *runtime* distribuye tareas, intenta mover el cómputo cerca de los datos y reejecuta tareas fallidas. Esta abstracción facilita procesamiento masivo por lotes, pero el *shuffle* implica red, disco y sincronización; por eso no es la opción natural para inferencia interactiva de pocos milisegundos.
+
+**Referencia fundacional:** Jeffrey Dean y Sanjay Ghemawat, [*MapReduce: Simplified Data Processing on Large Clusters*](https://research.google/pubs/mapreduce-simplified-data-processing-on-large-clusters/), OSDI 2004.
 
 ## Diapositiva 21. Hadoop y detección de fraude
 
@@ -535,9 +626,13 @@ Busca \(K\) centroides que minimicen la suma de distancias cuadradas de cada pun
 
 Centra los datos y encuentra direcciones ortogonales de máxima varianza. Algebraicamente, son los autovectores de la matriz de covarianza; en la práctica suele calcularse con descomposición en valores singulares (SVD). El primer componente explica la mayor varianza posible, el segundo la mayor varianza restante y así sucesivamente.
 
-**Supuestos y límites:** PCA es una proyección lineal y no usa la etiqueta. Mucha varianza no equivale a mucha capacidad predictiva: una señal de fraude con poca varianza podría descartarse. El escalado modifica el resultado y los componentes son combinaciones de variables que pueden ser difíciles de interpretar.
+**Supuestos y límites:** PCA es una proyección lineal y no usa la etiqueta. Mucha varianza no equivale a mucha capacidad predictiva: una señal de fraude con poca varianza podría descartarse. El escalado modifica el resultado y los componentes son combinaciones de variables que pueden ser difíciles de interpretar. El centrado, escalado y PCA se ajustan solo con entrenamiento y luego se aplican a validación/test para evitar fuga.
 
 **Aclaración:** supervisado y no supervisado responden preguntas distintas y pueden complementarse. K-Means y PCA sirven para explorar o construir variables, pero su salida debe validarse contra etiquetas y decisiones del negocio antes de llamarla detector de fraude.
+
+### De agrupamiento a detección de anomalías
+
+K-Means y PCA pueden aportar variables o señalar casos alejados del patrón común, pero no entregan por sí solos una verdad “fraude”. Para anomalías también existen Isolation Forest, Local Outlier Factor y One-Class SVM. Su resultado debe validarse con etiquetas posteriores o revisión experta, porque una transacción rara puede ser legítima y un fraude coordinado puede parecer frecuente.
 
 ## Diapositiva 29. Lectura del dataset
 
@@ -557,6 +652,8 @@ Centra los datos y encuentra direcciones ortogonales de máxima varianza. Algebr
 
 **Riesgo:** Aplicar el remuestreo antes de separar los datos genera fuga de información.
 
+**Fundamento:** el remuestreo modifica la distribución empírica con la que aprende el clasificador; no cambia cuánto fraude existirá en producción. Por eso el test debe conservar una prevalencia realista. Si se balancea el test, precision, valores predictivos y cantidad esperada de alertas dejan de representar el escenario operativo.
+
 ## Diapositiva 31. RUS, ROS y SMOTE
 
 **Qué presenta:** tres estrategias ante el desbalance.
@@ -575,6 +672,32 @@ Borderline-SMOTE concentra la generación en ejemplos minoritarios cercanos a la
 
 **Regla crítica:** separar primero el test. Dentro de validación cruzada, el remuestreo debe ajustarse nuevamente sólo con el fold de entrenamiento. Remuestrear antes de dividir permite que información derivada de validación o test llegue al entrenamiento y produce una evaluación optimista.
 
+### Funcionamiento paso a paso
+
+- **RUS:** selecciona al azar solo una parte de la clase mayoritaria. Cambia la distribución y acelera el ajuste, pero puede eliminar casos fronterizos valiosos. Debe repetirse con distintas semillas para comprobar estabilidad.
+- **ROS:** muestrea con reemplazo ejemplos minoritarios hasta alcanzar la proporción elegida. No inventa información; aumenta el peso efectivo de observaciones existentes y puede facilitar el sobreajuste.
+- **SMOTE:** para un ejemplo minoritario `xᵢ`, elige uno de sus vecinos minoritarios `xⱼ` y genera `x_nuevo = xᵢ + λ(xⱼ − xᵢ)`, con `λ` entre 0 y 1. Así interpola segmentos dentro de la clase minoritaria.
+- **Borderline-SMOTE:** concentra la generación en ejemplos minoritarios rodeados por muchos vecinos de la clase contraria, es decir, cerca de una frontera estimada.
+- **Pesos de clase:** no remuestrean; aumentan en la función de pérdida el costo de equivocarse en la clase minoritaria y constituyen un baseline importante.
+
+### Qué puede salir mal con SMOTE
+
+La distancia entre vecinos pierde sentido si las variables no están escaladas. La interpolación también puede crear combinaciones imposibles en variables categóricas o entre subgrupos separados. Si hay etiquetas erróneas, SMOTE puede multiplicar el ruido. Para datos mixtos existe `SMOTENC`, que trata explícitamente variables categóricas.
+
+El remuestreo cambia la prevalencia observada durante el entrenamiento. Esto puede afectar la calibración: un puntaje alto no debe interpretarse automáticamente como probabilidad real de fraude. Hay que evaluar y, si corresponde, calibrar sobre datos con prevalencia representativa.
+
+### Alternativas que también deben compararse
+
+- pesos de clase o pérdidas sensibles al costo;
+- ajuste del umbral sin modificar el entrenamiento;
+- ensambles balanceados;
+- recolección de mejores etiquetas;
+- evaluación temporal cuando el fraude cambia con el tiempo.
+
+No existe un ganador universal: la comparación debe realizarse dentro de validación cruzada o particiones temporales, conservando intacto el conjunto final.
+
+**Referencias:** Chawla, Bowyer, Hall y Kegelmeyer, [*SMOTE: Synthetic Minority Over-sampling Technique*](https://doi.org/10.1613/JAIR.953), JAIR 16, 2002; [guía de sobremuestreo de imbalanced-learn](https://imbalanced-learn.org/stable/over_sampling.html).
+
 ## Diapositiva 32. División y entrenamiento
 
 **Qué presenta:** 80% para entrenamiento, 20% para prueba, SMOTE y regresión logística.
@@ -585,11 +708,19 @@ Borderline-SMOTE concentra la generación en ejemplos minoritarios cercanos a la
 
 **Buena práctica:** Integrar preprocesamiento, remuestreo y modelo en un pipeline durante la validación cruzada.
 
+### Por qué el orden evita la fuga
+
+La secuencia correcta es: separar test; dentro de cada partición de entrenamiento ajustar imputación, escalado y remuestreo; entrenar; aplicar únicamente las transformaciones aprendidas al fold de validación. Si SMOTE se ejecuta antes de dividir, un ejemplo sintético puede contener información geométrica de observaciones que luego aparecen en validación. El resultado parece mejor, pero no representa datos verdaderamente nuevos.
+
+En transacciones conviene preguntar si una división aleatoria reproduce el uso real. Si el modelo se entrenará con el pasado para predecir el futuro, una separación temporal suele ser más honesta y permite observar *concept drift*.
+
 ### Qué aprende la regresión logística en este flujo
 
-El modelo no aprende una regla fija de fraude: ajusta un peso por variable para minimizar la entropía cruzada regularizada. Con `class_weight="balanced"`, los errores de la clase escasa pesan más durante el ajuste; con SMOTE cambia la muestra usada para estimar la frontera. Son intervenciones diferentes y deben compararse, no acumularse automáticamente.
+Los coeficientes se ajustan para reducir la pérdida logarítmica. Un coeficiente positivo aumenta el logaritmo de las chances de fraude; `exp(βⱼ)` es el factor multiplicativo de las *odds* por una unidad adicional de `xⱼ`, manteniendo las demás variables constantes. Esa interpretación requiere atención cuando hay variables correlacionadas, escaladas o transformadas.
 
-El método `predict_proba` entrega un puntaje entre 0 y 1 según el modelo. El umbral se selecciona con validación y una función de costo; elegirlo mirando el test contamina la evaluación final. Si se necesita interpretar el puntaje como probabilidad, también debe revisarse su calibración.
+La regularización controla complejidad: L2 contrae todos los coeficientes; L1 puede anular algunos. El hiperparámetro `C` de scikit-learn es el inverso de la fuerza de regularización: menor `C`, mayor penalización. Con `class_weight="balanced"`, los errores de la clase escasa pesan más; con SMOTE cambia la muestra usada para estimar la frontera. Son intervenciones diferentes y deben compararse, no acumularse automáticamente.
+
+`predict_proba` entrega un puntaje entre 0 y 1 según el modelo. El umbral se selecciona con validación y una función de costo; elegirlo mirando el test contamina la evaluación final. Si se necesita interpretar el puntaje como probabilidad, también debe revisarse su calibración.
 
 ## Diapositiva 33. Sistema de reglas
 
@@ -623,13 +754,61 @@ El método `predict_proba` entrega un puntaje entre 0 y 1 según el modelo. El u
 
 **Cómo debería resolverse:** Entrenar un clasificador, por ejemplo regresión logística. Obtener probabilidades, elegir un umbral y mostrar la matriz de confusión. Luego comparar precision, recall, F1 y PR-AUC. La métrica elegida debe reflejar el costo de dejar pasar fraudes y el costo de bloquear operaciones legítimas.
 
-### Por qué regresión lineal y R² no responden esta pregunta
+### Diferencia teórica entre regresión y clasificación
 
-La regresión lineal minimiza errores cuadrados para una variable continua y puede producir valores menores que 0 o mayores que 1. \(R^2=1-SS_{res}/SS_{tot}\) compara ese error cuadrático con predecir la media: no cuenta aciertos ni define una clase. Tratar sus salidas como probabilidades viola la forma del problema.
+La regresión lineal minimiza error cuadrático y puede predecir valores menores que 0 o mayores que 1. `R² = 1 - SS_res/SS_tot` compara el error cuadrático del modelo con el de predecir la media; mide variación explicada en una variable continua, no la proporción de clases correctas.
 
-La regresión logística, en cambio, limita la salida a \([0,1]\) y optimiza una pérdida diseñada para etiquetas binarias. Esto no la vuelve automáticamente buena: aún necesita partición correcta, comparación con baselines, métricas por clase, selección de umbral y validación temporal cuando el fraude cambia con el tiempo.
+La regresión logística modela una probabilidad y se entrena con pérdida logarítmica. Una predicción probabilística se convierte en clase mediante un umbral. Bajar el umbral suele aumentar recall y también los falsos positivos; subirlo suele hacer lo contrario. Por eso la elección correcta no surge de `0,5` por costumbre sino del costo esperado:
+
+`costo = C_FN × FN + C_FP × FP + costos_operativos`.
+
+### Cómo leer las métricas
+
+- `precision = TP / (TP + FP)`: de las alertas emitidas, cuántas eran fraude.
+- `recall = TP / (TP + FN)`: de los fraudes reales, cuántos se detectaron.
+- `F1 = 2 × precision × recall / (precision + recall)`: equilibrio simétrico; no incorpora costos distintos.
+- **PR-AUC:** resume precision y recall al variar el umbral. Su baseline depende de la prevalencia positiva, por lo que debe informarse junto con la proporción de fraude.
+- **ROC-AUC:** mide la capacidad de ordenar un positivo por encima de un negativo. Puede verse optimista cuando existen muchísimos negativos, por lo que conviene acompañarla con precision-recall.
+- **Calibración:** si casos con probabilidad 0,20 resultan positivos aproximadamente el 20% de las veces, el modelo está calibrado en esa región. Discriminar bien y calibrar bien son propiedades diferentes.
+
+**Referencias:** [métricas de clasificación](https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics), [curvas precision-recall](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html) y [calibración de probabilidades](https://scikit-learn.org/stable/modules/calibration.html), documentación de scikit-learn.
+
+Una formulación correcta no garantiza por sí sola un buen modelo: todavía necesita partición correcta, comparación con baselines, métricas por clase, selección de umbral y validación temporal cuando el fraude cambia con el tiempo.
 
 **Pregunta de cierre:** ¿Qué resultado necesitarías para recomendar el modelo y qué daño podría causar una decisión equivocada?
+
+La métrica técnica no reemplaza la función de costo. Un umbral operativo debería considerar el importe esperado del fraude, el costo de revisar una alerta, la fricción al cliente y la capacidad humana disponible. También se deben informar intervalos de incertidumbre o variabilidad entre particiones, no solo un único número.
+
+---
+
+# Referencias teóricas y técnicas
+
+## Textos generales
+
+- Hastie, Tibshirani y Friedman, *The Elements of Statistical Learning*, 2.ª ed.: <https://hastie.su.domains/ElemStatLearn/>. Capítulos 3, 4, 9, 12 y 15 para modelos lineales, clasificación, árboles, SVM y Random Forest.
+- James, Witten, Hastie, Tibshirani y Taylor, *An Introduction to Statistical Learning*, edición Python: <https://www.statlearning.com/>. Introducción accesible con teoría, ejemplos y laboratorios.
+- scikit-learn, guía supervisada: <https://scikit-learn.org/stable/supervised_learning.html>.
+- scikit-learn, guía no supervisada: <https://scikit-learn.org/stable/unsupervised_learning.html>.
+
+## Algoritmos
+
+- Cox, “The Regression Analysis of Binary Sequences” (1958), formulación clásica de regresión logística: <https://doi.org/10.1111/j.2517-6161.1958.tb00292.x>.
+- scikit-learn, regresión logística: <https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression>.
+- scikit-learn, Naive Bayes y sus variantes: <https://scikit-learn.org/stable/modules/naive_bayes.html>.
+- Quinlan, “Induction of Decision Trees” (1986): <https://doi.org/10.1007/BF00116251>.
+- Breiman, “Random Forests” (2001): <https://doi.org/10.1023/A:1010933404324>.
+- Cortes y Vapnik, “Support-Vector Networks” (1995): <https://doi.org/10.1007/BF00994018>.
+- Rumelhart, Hinton y Williams, “Learning representations by back-propagating errors” (1986): <https://doi.org/10.1038/323533a0>.
+- Lloyd, “Least Squares Quantization in PCM” (1982), algoritmo K-Means: <https://doi.org/10.1109/TIT.1982.1056489>.
+- Jolliffe y Cadima, revisión de PCA (2016): <https://doi.org/10.1098/rsta.2015.0202>.
+
+## Desbalance y evaluación
+
+- Chawla, Bowyer, Hall y Kegelmeyer, “SMOTE: Synthetic Minority Over-sampling Technique” (2002): <https://doi.org/10.1613/jair.953>.
+- imbalanced-learn, guía de sobre-muestreo y variantes de SMOTE: <https://imbalanced-learn.org/stable/over_sampling.html>.
+- scikit-learn, precision, recall y curva precision-recall: <https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html>.
+- scikit-learn, calibración de probabilidades: <https://scikit-learn.org/stable/modules/calibration.html>.
+- Saito y Rehmsmeier, “The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets” (2015): <https://doi.org/10.1371/journal.pone.0118432>.
 
 ---
 
