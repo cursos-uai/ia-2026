@@ -17,8 +17,7 @@ Al finalizar la clase, los estudiantes deberían poder:
 
 - [Guion completo para alumnos](guion-alumnos-big-data-ml.md): diccionario ampliado, explicación de las 36 diapositivas y autoevaluación.
 - [Guion y diccionario resumidos](guion-y-diccionario.md): versión breve para consulta durante la clase.
-- [Ejercicios ampliados de indagación y repositorios](ejercicios-indagacion-y-repositorios.md): seis recorridos con literatura, auditoría de GitHub, métricas, SMOTE, fraude reproducible y Spark.
-- [Ejercicios de investigación y laboratorio](ejercicios-investigacion-y-laboratorio.md): actividades adicionales y consignas de profundización.
+- [Actividad evaluada](actividad-evaluada.md): los dos ejercicios obligatorios para UAI Ultra, uno de indagación y otro técnico en Google Colab, con formato de entrega y criterios de evaluación.
 - [Experimento reproducible sobre clases desbalanceadas](laboratorio_desbalance.py)
 - [Dependencias mínimas](requirements.txt)
 - [Plantilla de entrega](plantilla-entrega.md): registro de fuentes, entorno, evidencia, límites y riesgos.
@@ -36,9 +35,8 @@ El laboratorio usa datos sintéticos y no descarga información privada ni finan
 
 ## Recorrido sugerido
 
-- Antes de clase: investigación sobre Big Data y auditoría de un repositorio.
-- Durante la clase: laboratorio de métricas y ejercicio de SMOTE sin fuga de datos.
-- Después de clase: reproducción de una sección del Fraud Detection Handbook.
-- Profundización opcional: arquitectura batch/streaming y prueba local con Spark.
+- Antes de clase: lectura y comparación de fuentes sobre Big Data y Machine Learning.
+- Durante la clase: desarrollo del laboratorio en Google Colab y análisis de métricas.
+- Después de clase: integración de los dos ejercicios en un único PDF.
 
-Los equipos pueden trabajar en roles rotativos de investigador, ejecutor y revisor. Toda entrega debe citar fuentes, registrar versiones y distinguir resultados observados de conclusiones generales.
+La actividad evaluada contiene solamente dos ejercicios obligatorios. Toda entrega debe citar fuentes, registrar versiones y distinguir resultados observados de conclusiones generales.
